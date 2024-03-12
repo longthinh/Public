@@ -1,4 +1,0 @@
-#!name=MitM All Hostnames
-#!desc=Http Capture MitM All Hostnames
-[MITM]
-hostname = -*.apple.com, -*.icloud.com, -*.mzstatic.com, -*.crashlytics.com, -*.facebook.com, -*.instagram.com, *
