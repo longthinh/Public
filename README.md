@@ -1,5 +1,5 @@
 ```
-· 👋 Hi, I’m 𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏 (longthinh)
+· 👋 Hi, I’m longthinh
 · 👀 I’m interested in Infomation Technology
 · 🌱 I’m currently learning JavaScript and Python
 · 💞️ I’m looking to collaborate on GitHub
