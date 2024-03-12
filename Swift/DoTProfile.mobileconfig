@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>PayloadDisplayName</key>
+    <string>𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏</string>
+    <key>PayloadDescription</key>
+    <string>Help docs
+
+This profile uses IP 127.0.0.1 (localhost) as a DNS over TLS (DoT) server
+ 
+Turn OFF this Profile.mobileconfig if you want to install System Apple Apps from App Store and allow OTA after Turn ON
+
+· Disable OTA Updates
+· Block System Apple Apps from App Store</string>
+    <key>PayloadOrganization</key>
+    <string>Developer longthinh</string>
+    <key>PayloadIdentifier</key>
+    <string>com.apple.Luxyriel</string>
+    <key>PayloadUUID</key>
+    <string>0b91a3d3-ede3-4127-9c10-91b6919358ea</string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadRebootSuggested</key>
+    <false/>
+    <key>PayloadScope</key>
+    <string>System</string>
+    <key>ConsentText</key>
+    <dict>
+      <key>default</key>
+      <string>· 👋 Hi, I’m 𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏 (longthinh)
+· 👀 I’m interested in Infomation Technology
+· 🌱 I’m currently learning JavaScript and Python
+· 💞️ I’m looking to collaborate on GitHub
+· 📫 How to reach me longthinh@mail.com
+· ⚠️ Warning! Do not copy in any form</string>
+    </dict>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+    <key>HasRemovalPasscode</key>
+    <true/>
+    <key>PayloadScope</key>
+    <string>System</string>
+    <key>TargetDeviceType</key>
+    <integer>1</integer>
+    <key>PayloadContent</key>
+    <array>
+      <dict>
+        <key>PayloadDisplayName</key>
+        <string>DoT Server</string>
+        <key>PayloadOrganization</key>
+        <string>localhost</string>
+        <key>PayloadIdentifier</key>
+        <string>com.apple.dnsSettings.managed</string>
+        <key>PayloadType</key>
+        <string>com.apple.dnsSettings.managed</string>
+        <key>PayloadUUID</key>
+        <string>6a71a3b1-bedb-4f68-bc7e-1d3ce542b0b6</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+        <key>DNSSettings</key>
+        <dict>
+          <key>DNSProtocol</key>
+          <string>TLS</string>
+          <key>ServerAddresses</key>
+          <array>
+            <string>127.0.0.1</string>
+          </array>
+          <key>ServerName</key>
+          <string>localhost</string>
+          <key>SupplementalMatchDomains</key>
+          <array>
+            <string>gdmf.apple.com</string>
+            <string>mesu.apple.com</string>
+            <string>su.itunes.apple.com</string>
+          </array>
+        </dict>
+      </dict>
+    </array>
+  </dict>
+</plist>

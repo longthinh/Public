@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>PayloadDisplayName</key>
+        <string>𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏</string>
+        <key>PayloadDescription</key>
+        <string>Help docs
+
+· Disable OTA Updates
+· Block App Updates on the App Store
+
+· Quantumult X (normal mode)
+
+· Surge Network (VIF only)</string>
+        <key>PayloadOrganization</key>
+        <string>Developer longthinh</string>
+        <key>PayloadIdentifier</key>
+        <string>com.apple.Luxyriel</string>
+        <key>PayloadUUID</key>
+        <string>952e6909-5a12-49c7-85bc-813d5e3fe69d</string>
+        <key>PayloadRemovalDisallowed</key>
+        <false/>
+        <key>PayloadRebootSuggested</key>
+        <false/>
+        <key>ConsentText</key>
+        <dict>
+        <key>default</key>
+        <string>Proxy Auto-Configuration (PAC) file
+
+· 👋 Hi, I’m 𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏 (longthinh)
+· 👀 I’m interested in Infomation Technology
+· 🌱 I’m currently learning JavaScript and Python
+· 💞️ I’m looking to collaborate on GitHub
+· 📫 How to reach me longthinh@mail.com
+· ⚠️ Warning! Do not copy in any form
+
+Required Supervised Mode</string>
+        </dict>
+        <key>PayloadType</key>
+        <string>Configuration</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+        <key>HasRemovalPasscode</key>
+        <true/>
+        <key>TargetDeviceType</key>
+        <integer>1</integer>
+        <key>PayloadContent</key>
+        <array>
+            <dict>
+		<key>PayloadScope</key>
+		<string>System</string>
+                <key>PayloadDisplayName</key>
+                <string>Global HTTP Proxy</string>
+                <key>PayloadIdentifier</key>
+                <string>com.apple.proxy.http.global</string>
+                <key>PayloadType</key>
+                <string>com.apple.proxy.http.global</string>
+                <key>PayloadUUID</key>
+                <string>47d34003-cf0f-4a2b-87ef-2aa5194f066a</string>
+                <key>PayloadVersion</key>
+                <integer>1</integer>
+                <key>ProxyType</key>
+                <string>Auto</string>
+                <key>ProxyPACURL</key>
+                <string>https://raw.githubusercontent.com/Luxyriel/Database/main/Swift/PAC.js</string>
+                <key>ProxyPACFallbackAllowed</key>
+                <false/>
+                <key>ProxyCaptiveLoginAllowed</key>
+                <false/>
+            </dict>
+            <dict>
+                <key>PayloadDisplayName</key>
+                <string>Lock Screen Message</string>
+                <key>PayloadIdentifier</key>
+                <string>com.apple.shareddeviceconfiguration</string>
+                <key>PayloadType</key>
+                <string>com.apple.shareddeviceconfiguration</string>
+                <key>PayloadUUID</key>
+                <string>e77941bc-8b25-4360-88a5-e0fa7f53f0ab</string>
+                <key>PayloadVersion</key>
+                <integer>1</integer>
+                <key>IfLostReturnToMessage</key>
+                <string>𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏</string>
+                <key>LockScreenFootnote</key>
+                <string>This iPhone is supervised by 𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏</string>
+                <key>AssetTagInformation</key>
+                <string>(longthinh)</string>
+            </dict>
+        </array>
+    </dict>
+</plist>
