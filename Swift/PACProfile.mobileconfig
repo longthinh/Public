@@ -63,7 +63,7 @@ Required Supervised Mode</string>
                 <key>ProxyType</key>
                 <string>Auto</string>
                 <key>ProxyPACURL</key>
-                <string>https://raw.githubusercontent.com/Luxyriel/Database/main/Swift/PAC.js</string>
+                <string>https://raw.githubusercontent.com/longthinh/dashboard/main/Swift/PAC.js</string>
                 <key>ProxyPACFallbackAllowed</key>
                 <false/>
                 <key>ProxyCaptiveLoginAllowed</key>
