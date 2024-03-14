@@ -4,7 +4,7 @@
 * @𝘀𝘁𝗿2
 * @$1_lite$2
 * @longthinh
-  resource_parser_url = https://raw.githubusercontent.com/Luxyriel/Database/main/JavaScript/Parser.js
+  resource_parser_url = https://raw.githubusercontent.com/longthinh/dashboard/main/JavaScript/Parser.js
 * @class A block of lines of a given level
 * @param {int} lvl The block's level
 * @private
