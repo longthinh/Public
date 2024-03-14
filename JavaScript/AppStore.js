@@ -1,5 +1,5 @@
 /**
-* @𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥
+* @longthinh
 */
 
 const $ = new API("appstore", true);
