@@ -1,8 +1,5 @@
-```
-· 👋 Hi, I’m longthinh
-· 👀 I’m interested in Infomation Technology
-· 🌱 I’m currently learning JavaScript and Python
-· 💞️ I’m looking to collaborate on GitHub
-· 📫 How to reach me longthinh@mail.com
-· ⚠️ Warning! Do not copy in any form
-```
+· 👋 Hi, I’m [_𝔏𝔬𝔫𝔤 𝔗𝔥𝔦𝔫𝔥_](https://t.me/longthinh)
+
+· 🌱 I’m interested in coding
+
+[![My Github stats](https://github-readme-stats.vercel.app/api?username=longthinh&showicons=true&hide=contribs,prs,issues&theme=radical)](https://github.com/longthinh/github-readme-stats)
