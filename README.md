@@ -2,4 +2,4 @@
 
 · 🌱 I’m interested in coding
 
-<p style="text-align:center;">[![My Github stats](https://github-readme-stats.vercel.app/api?username=longthinh&showicons=true&hide=contribs,prs,issues&theme=radical)](https://github.com/longthinh/github-readme-stats)</p>
+:::{.center}[![My Github stats](https://github-readme-stats.vercel.app/api?username=longthinh&showicons=true&hide=contribs,prs,issues&theme=radical)](https://github.com/longthinh/github-readme-stats):::
