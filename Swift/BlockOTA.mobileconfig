@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ConsentText</key>
+	<dict>
+		<key>default</key>
+		<string>Block OTA (&amp;Apple System Apps)</string>
+	</dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>DNSSettings</key>
+			<dict>
+				<key>DNSProtocol</key>
+						<string>TLS</string>
+				<key>ServerAddresses</key>
+				<array>
+							<string>127.0.0.1</string>
+				</array>
+				<key>ServerName</key>
+						<string>localhost</string>
+				<key>SupplementalMatchDomains</key>
+				<array>
+					<string>mesu.apple.com</string>
+					<string>mesu.apple.com.edgekey.net</string>
+					<string>mesu-cdn.apple.com.akadns.net</string>
+					<string>mesu-cdn.origin-apple.com.akadns.net</string>
+					<string>gdmf.apple.com</string>
+					<string>gdmf.apple.com.akadns.net</string>
+					<string>gdmf.v.aaplimg.com</string>
+					<string>www.gdmf.apple.com</string>
+					<string>appldnld.apple.com</string>
+					<string>appldnld.apple.com.akadns.net</string>
+					<string>appldnld.g.aaplimg.com</string>
+					<string>appldnld-lb.apple.com.akadns.net</string>
+				</array>
+			</dict>
+			<key>PayloadDisplayName</key>
+					<string>Block OTA (&amp;Apple System Apps)</string>
+			<key>PayloadIdentifier</key>
+					<string>com.apple.dnsSettings.managed.396ca827-93a8-4f30-866d-12debc011933</string>
+			<key>PayloadType</key>
+					<string>com.apple.dnsSettings.managed</string>
+			<key>PayloadUUID</key>
+					<string>396ca827-93a8-4f30-866d-12debc011933</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+		</array>
+	<key>PayloadDescription</key>
+	<string>
+This profile uses IP 127.0.0.1 (localhost) as a DNS over TLS (DoT) server to block:
+- apple's MESU and GDMF and appldnld servers
+
+(turn OFF this OTA.profile if you want to install System Apple Apps from AppStore and after turn ON)
+(turn OFF this OTA.profile if you want to allow OTA and after turn ON)
+
+Blocked hosts:
+- mesu.apple.com
+- mesu.apple.com.edgekey.net
+- mesu-cdn.apple.com.akadns.net
+- mesu-cdn.origin-apple.com.akadns.net
+
+- gdmf.apple.com
+- gdmf.apple.com.akadns.net
+- gdmf.v.aaplimg.com
+- www.gdmf.apple.com
+
+- appldnld.apple.com
+- appldnld.apple.com.akadns.net
+- appldnld.g.aaplimg.com
+- appldnld-lb.apple.com.akadns.net
+	</string>
+	<key>PayloadDisplayName</key>
+	<string>Block OTA (&amp;Apple System Apps)</string>
+	<key>PayloadIdentifier</key>
+	<string>24497ba6-c1bf-46e4-a689-312384c14a93</string>
+	<key>PayloadOrganization</key>
+	<string>dev1lb0rn</string>
+	<key>PayloadScope</key>
+	<string>System</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>9E178575-1415-4460-B76B-7FCB8F8A5293</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+	<key>TargetDeviceType</key>
+	<integer>0</integer>
+</dict>
+</plist>
