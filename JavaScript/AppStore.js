@@ -78,15 +78,25 @@ async function postData(d) {
       $.info(showData);
     }
     let infos = {};
+
     await Promise.all(
       Object.keys(d).map(async (k) => {
         let config = {
-          url: "https://itunes.apple.com/lookup?id=" + d[k] + "&country=" + k,
+          url:
+            "https://itunes.apple.com/lookup?id=" +
+            d[k].join(",") +
+            "&country=" +
+            k,
         };
+
         await $.http
           .get(config)
           .then((response) => {
             let results = JSON.parse(response.body).results;
+
+            // Sort results by trackName (app name) alphabetically
+            results.sort((a, b) => a.trackName.localeCompare(b.trackName));
+
             if (Array.isArray(results) && results.length > 0) {
               results.forEach((x) => {
                 infos[x.trackId] = {
@@ -94,14 +104,16 @@ async function postData(d) {
                   v: x.version,
                   p: x.formattedPrice,
                 };
+
+                // Check for notification messages
                 if (showData.hasOwnProperty(x.trackId)) {
                   if (
                     JSON.stringify(showData[x.trackId]) !==
                     JSON.stringify(infos[x.trackId])
                   ) {
+                    // Price change notification
                     if (x.formattedPrice !== showData[x.trackId].p) {
                       const notifyMessage = `${x.trackName} · ${x.formattedPrice}`;
-
                       notifys.push(notifyMessage);
 
                       // Check if the notification has been sent
@@ -110,9 +122,10 @@ async function postData(d) {
                         sentNotifications[x.trackId] = true; // Mark as sent
                       }
                     }
+
+                    // Version change notification
                     if (x.version !== showData[x.trackId].v) {
                       const notifyMessage = `${x.trackName} · ${x.version}`;
-
                       notifys.push(notifyMessage);
 
                       // Check if the notification has been sent
@@ -123,9 +136,9 @@ async function postData(d) {
                     }
                   }
                 } else {
+                  // New app notification
                   const notifyPriceMessage = `${x.trackName} · ${x.formattedPrice}`;
                   const notifyVersionMessage = `${x.trackName} · ${x.version}`;
-
                   notifys.push(notifyPriceMessage);
                   notifys.push(notifyVersionMessage);
 
@@ -144,8 +157,11 @@ async function postData(d) {
           });
       })
     );
+
+    // Convert infos to JSON string and save to API storage
     infos = JSON.stringify(infos);
     $.write(infos, "compare");
+
     if (notifys.length > 0) {
       $.done();
     } else {
