@@ -3,7 +3,7 @@
 <plist version="1.0">
   <dict>
     <key>PayloadDisplayName</key>
-    <string>𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏</string>
+    <string>𝔏𝔬𝔫𝔤 𝔗𝔥𝔦𝔫𝔥</string>
     <key>PayloadDescription</key>
     <string>Help docs
 
@@ -28,12 +28,9 @@ Turn OFF this Profile.mobileconfig if you want to install System Apple Apps from
     <key>ConsentText</key>
     <dict>
       <key>default</key>
-      <string>· 👋 Hi, I’m 𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏 (longthinh)
-· 👀 I’m interested in Infomation Technology
-· 🌱 I’m currently learning JavaScript and Python
-· 💞️ I’m looking to collaborate on GitHub
-· 📫 How to reach me longthinh@mail.com
-· ⚠️ Warning! Do not copy in any form</string>
+      <string>· 👋 Hi, I’m longthinh
+
+· 🌱 I’m interested in coding</string>
     </dict>
     <key>PayloadType</key>
     <string>Configuration</string>
