@@ -16,7 +16,7 @@ Turn OFF this Profile.mobileconfig if you want to install System Apple Apps from
     <key>PayloadOrganization</key>
     <string>Developer longthinh</string>
     <key>PayloadIdentifier</key>
-    <string>com.apple.Luxyriel</string>
+    <string>com.apple.longthinh</string>
     <key>PayloadUUID</key>
     <string>0b91a3d3-ede3-4127-9c10-91b6919358ea</string>
     <key>PayloadRemovalDisallowed</key>
@@ -28,7 +28,7 @@ Turn OFF this Profile.mobileconfig if you want to install System Apple Apps from
     <key>ConsentText</key>
     <dict>
       <key>default</key>
-      <string>· 👋 Hi, I’m longthinh
+      <string>· 👋 Hi, I’m 𝔏𝔬𝔫𝔤 𝔗𝔥𝔦𝔫𝔥
 
 · 🌱 I’m interested in coding</string>
     </dict>
