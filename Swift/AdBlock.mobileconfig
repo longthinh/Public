@@ -154,7 +154,7 @@
 		<key>PayloadOrganization</key>
 		<string>Developer longthinh</string>
 		<key>PayloadDisplayName</key>
-		<string>AdBlock 𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏 (longthinh)</string>
+		<string>AdBlock DNS</string>
 		<key>PayloadIdentifier</key>
 		<string>AdBlock</string>
 		<key>PayloadRemovalDisallowed</key>
