@@ -3,7 +3,7 @@
 <plist version="1.0">
     <dict>
         <key>PayloadDisplayName</key>
-        <string>𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏</string>
+        <string>𝔏𝔬𝔫𝔤 𝔗𝔥𝔦𝔫𝔥</string>
         <key>PayloadDescription</key>
         <string>Help docs
 
@@ -16,7 +16,7 @@
         <key>PayloadOrganization</key>
         <string>Developer longthinh</string>
         <key>PayloadIdentifier</key>
-        <string>com.apple.Luxyriel</string>
+        <string>com.apple.longthinh</string>
         <key>PayloadUUID</key>
         <string>952e6909-5a12-49c7-85bc-813d5e3fe69d</string>
         <key>PayloadRemovalDisallowed</key>
@@ -28,12 +28,9 @@
         <key>default</key>
         <string>Proxy Auto-Configuration (PAC) file
 
-· 👋 Hi, I’m 𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏 (longthinh)
-· 👀 I’m interested in Infomation Technology
-· 🌱 I’m currently learning JavaScript and Python
-· 💞️ I’m looking to collaborate on GitHub
-· 📫 How to reach me longthinh@mail.com
-· ⚠️ Warning! Do not copy in any form
+· 👋 Hi, I’m 𝔏𝔬𝔫𝔤 𝔗𝔥𝔦𝔫𝔥
+
+· 🌱 I’m interested in coding
 
 Required Supervised Mode</string>
         </dict>
@@ -63,7 +60,7 @@ Required Supervised Mode</string>
                 <key>ProxyType</key>
                 <string>Auto</string>
                 <key>ProxyPACURL</key>
-                <string>https://raw.githubusercontent.com/longthinh/dashboard/main/Swift/PAC.js</string>
+                <string>https://raw.githubusercontent.com/longthinh/Public/main/Swift/PAC.js</string>
                 <key>ProxyPACFallbackAllowed</key>
                 <false/>
                 <key>ProxyCaptiveLoginAllowed</key>
@@ -81,11 +78,11 @@ Required Supervised Mode</string>
                 <key>PayloadVersion</key>
                 <integer>1</integer>
                 <key>IfLostReturnToMessage</key>
-                <string>𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏</string>
+                <string>𝔏𝔬𝔫𝔤 𝔗𝔥𝔦𝔫𝔥</string>
                 <key>LockScreenFootnote</key>
-                <string>This iPhone is supervised by 𝐋𝐮𝐱𝐲𝐫𝐢𝐞𝐥 𝕏</string>
+                <string>This iPhone is supervised by 𝔏𝔬𝔫𝔤 𝔗𝔥𝔦𝔫𝔥</string>
                 <key>AssetTagInformation</key>
-                <string>(longthinh)</string>
+                <string>(longthinh dev)</string>
             </dict>
         </array>
     </dict>
