@@ -9,7 +9,7 @@
 
 This profile uses IP 127.0.0.1 (localhost) as a DNS over TLS (DoT) server
  
-Turn OFF this Profile.mobileconfig if you want to install System Apple Apps from App Store and allow OTA after Turn ON
+Switch to DNS (Automatic) if you want to install System Apple Apps from App Store and allow OTA updates
 
 · Disable OTA Updates
 · Block System Apple Apps from App Store</string>
@@ -28,7 +28,7 @@ Turn OFF this Profile.mobileconfig if you want to install System Apple Apps from
     <key>ConsentText</key>
     <dict>
       <key>default</key>
-      <string>· 👋 Hi, I’m 𝔏𝔬𝔫𝔤 𝔗𝔥𝔦𝔫𝔥
+      <string>· 👋 Hi, I’m longthinh
 
 · 🌱 I’m interested in coding</string>
     </dict>
