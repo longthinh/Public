@@ -8,7 +8,7 @@
         <string>Help docs
 
 · Disable OTA Updates
-· Block App Updates on the App Store
+· Block System Apple Apps from App Store
 
 · Quantumult X (normal mode)
 
@@ -26,9 +26,9 @@
         <key>ConsentText</key>
         <dict>
         <key>default</key>
-        <string>Proxy Auto-Configuration (PAC) file
+        <string>Proxy Auto-Configuration (PAC)
 
-· 👋 Hi, I’m 𝔏𝔬𝔫𝔤 𝔗𝔥𝔦𝔫𝔥
+· 👋 Hi, I’m longthinh
 
 · 🌱 I’m interested in coding
 
@@ -78,11 +78,11 @@ Required Supervised Mode</string>
                 <key>PayloadVersion</key>
                 <integer>1</integer>
                 <key>IfLostReturnToMessage</key>
-                <string>𝔏𝔬𝔫𝔤 𝔗𝔥𝔦𝔫𝔥</string>
+                <string>longthinh</string>
                 <key>LockScreenFootnote</key>
-                <string>This iPhone is supervised by 𝔏𝔬𝔫𝔤 𝔗𝔥𝔦𝔫𝔥</string>
+                <string>This iPhone is supervised by longthinh</string>
                 <key>AssetTagInformation</key>
-                <string>(longthinh dev)</string>
+                <string>luxyriel</string>
             </dict>
         </array>
     </dict>
