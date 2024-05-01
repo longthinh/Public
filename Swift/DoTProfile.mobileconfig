@@ -22,7 +22,7 @@ Turn OFF this Profile.mobileconfig if you want to install System Apple Apps from
     <key>PayloadRemovalDisallowed</key>
     <false/>
     <key>PayloadRebootSuggested</key>
-    <false/>
+    <true/>
     <key>PayloadScope</key>
     <string>System</string>
     <key>ConsentText</key>
