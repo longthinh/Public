@@ -22,7 +22,7 @@
         <key>PayloadRemovalDisallowed</key>
         <false/>
         <key>PayloadRebootSuggested</key>
-        <false/>
+        <true/>
         <key>ConsentText</key>
         <dict>
         <key>default</key>
