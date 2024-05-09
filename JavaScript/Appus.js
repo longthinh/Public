@@ -5,7 +5,7 @@
 
 const $ = new API("appstoreus", true);
 
-let region = "VN"; // Default region setting
+let region = "US"; // Default region setting
 
 function flag(x) {
   var flags = new Map([
