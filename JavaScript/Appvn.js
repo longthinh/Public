@@ -3,7 +3,7 @@
  * Initialize API with "appstore" as a service and enable debug mode
  */
 
-const $ = new API("Appvn", true);
+const $ = new API("appstorevn", true);
 
 let region = "VN"; // Default region setting
 
