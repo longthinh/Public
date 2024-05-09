@@ -16,7 +16,7 @@ function flag(x) {
 }
 
 // Default list of app IDs
-let appId = ["6478813495"];
+let appId = ["6478813495","6466343783","1631459446"];
 
 // Check if appId is stored in API storage
 if ($.read("appId") != "" && $.read("appId") != undefined) {
