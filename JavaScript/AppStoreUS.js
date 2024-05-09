@@ -211,7 +211,7 @@ function emoji(x) {
 function notify(notifys) {
   notifys = notifys.join(`\n`);
   console.log(notifys);
-  $.notify(`${flag(region)}App Store${emoji("emp")}`, ``, notifys);
+  $.notify(`${flag(region)}App Store US${emoji("emp")}`, ``, notifys);
 }
 
 function ENV() {
