@@ -1,11 +1,10 @@
 /**
- * @longthinh
- * Initialize API with "appstore" as a service and enable debug mode
+ * @longthinh_Luxydev
  */
 
 const $ = new API("AppStore", true);
 
-let region = "US"; // Default region setting
+let region = "US";
 
 function flag(x) {
   var flags = new Map([
@@ -15,26 +14,23 @@ function flag(x) {
   return flags.get(x.toUpperCase());
 }
 
-// Default list of app IDs
-let appId = ["1548193893","1516894961","6443677513","1606340771","1593100294","1575124462","6461773977","1346501102","6476610177","1629755566","775737172","1498235191","1462586500","1623230250","1511763524","1481781647","1527036273","1436902243","1405459188","1312014438","896694807","1443988620","1442620678"];
+let appId = [""];
 
-// Check if appId is stored in API storage
 if ($.read("appId") != "" && $.read("appId") != undefined) {
   appId = $.read("appId").split(",");
 }
 
-// Check if region is stored in API storage
 if ($.read("region") != "" && $.read("region") != undefined) {
   region = $.read("region");
 }
 
-getData(appId); // Call getData function with the retrieved appId list
+getData(appId);
 
-let notifys = []; // Array to store notification messages
+let notifys = [];
 
-let sentNotifications = {}; // Store submitted information to check for changes
+let sentNotifications = {};
 
-let startTime = new Date().getTime(); // Record start time for performance measurement
+let startTime = new Date().getTime();
 
 function getData(x) {
   let matchData = {};
@@ -94,7 +90,6 @@ async function postData(d) {
           .then((response) => {
             let results = JSON.parse(response.body).results;
 
-            // Sort results by trackName (app name) alphabetically
             results.sort((a, b) => a.trackName.localeCompare(b.trackName));
 
             if (Array.isArray(results) && results.length > 0) {
@@ -105,47 +100,40 @@ async function postData(d) {
                   p: x.formattedPrice,
                 };
 
-                // Check for notification messages
                 if (showData.hasOwnProperty(x.trackId)) {
                   if (
                     JSON.stringify(showData[x.trackId]) !==
                     JSON.stringify(infos[x.trackId])
                   ) {
-                    // Price change notification
                     if (x.formattedPrice !== showData[x.trackId].p) {
                       const notifyMessage = `${x.trackName} · ${x.formattedPrice}`;
                       notifys.push(notifyMessage);
 
-                      // Check if the notification has been sent
                       if (!sentNotifications[x.trackId]) {
                         notify([notifyMessage]);
-                        sentNotifications[x.trackId] = true; // Mark as sent
+                        sentNotifications[x.trackId] = true;
                       }
                     }
 
-                    // Version change notification
                     if (x.version !== showData[x.trackId].v) {
                       const notifyMessage = `${x.trackName} · ${x.version}`;
                       notifys.push(notifyMessage);
 
-                      // Check if the notification has been sent
                       if (!sentNotifications[x.trackId]) {
                         notify([notifyMessage]);
-                        sentNotifications[x.trackId] = true; // Mark as sent
+                        sentNotifications[x.trackId] = true;
                       }
                     }
                   }
                 } else {
-                  // New app notification
                   const notifyPriceMessage = `${x.trackName} · ${x.formattedPrice}`;
                   const notifyVersionMessage = `${x.trackName} · ${x.version}`;
                   notifys.push(notifyPriceMessage);
                   notifys.push(notifyVersionMessage);
 
-                  // Check if the notification has been sent
                   if (!sentNotifications[x.trackId]) {
                     notify([notifyPriceMessage, notifyVersionMessage]);
-                    sentNotifications[x.trackId] = true; // Mark as sent
+                    sentNotifications[x.trackId] = true;
                   }
                 }
               });
@@ -158,7 +146,6 @@ async function postData(d) {
       })
     );
 
-    // Convert infos to JSON string and save to API storage
     infos = JSON.stringify(infos);
     $.write(infos, "compare");
 
@@ -371,14 +358,11 @@ function API(name = "untitled", debug = false) {
       };
     }
 
-    // Persistence
-    // Initialize cache
     initCache() {
       if (isQX) this.cache = JSON.parse($prefs.valueForKey(this.name) || "{}");
       if (isLoon || isSurge)
         this.cache = JSON.parse($persistentStore.read(this.name) || "{}");
 
-      // Create a json for root cache
       if (isNode) {
         let fpath = "root.json";
         if (!this.node.fs.existsSync(fpath)) {
@@ -393,7 +377,6 @@ function API(name = "untitled", debug = false) {
         }
         this.root = {};
 
-        // Create a json file with the given name if not exists
         fpath = `${this.name}.json`;
         if (!this.node.fs.existsSync(fpath)) {
           this.node.fs.writeFileSync(
@@ -413,7 +396,6 @@ function API(name = "untitled", debug = false) {
       }
     }
 
-    // Store cache
     persistCache() {
       const data = JSON.stringify(this.cache, null, 2);
       if (isQX) $prefs.setValueForKey(data, this.name);
@@ -494,7 +476,6 @@ function API(name = "untitled", debug = false) {
       this.persistCache();
     }
 
-    // Notification
     notify(title, subtitle = "", content = "", options = {}) {
       const openURL = options["open-url"];
       const mediaURL = options["media-url"];
@@ -540,7 +521,6 @@ function API(name = "untitled", debug = false) {
       }
     }
 
-    // Other helper functions
     log(msg) {
       if (this.debug) console.log(`[${this.name}] LOG: ${this.stringify(msg)}`);
     }
