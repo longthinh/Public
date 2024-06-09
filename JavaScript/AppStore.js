@@ -1,5 +1,5 @@
 /**
- * @longthinh_Luxydev
+ * @longthinh
  */
 
 const $ = new API("AppStore", true);
