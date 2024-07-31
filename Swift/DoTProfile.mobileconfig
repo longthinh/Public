@@ -12,7 +12,9 @@ This profile uses IP 127.0.0.1 (localhost) as a DNS over TLS (DoT) server
 Switch to DNS (Automatic) if you want to install System Apple Apps from App Store and allow OTA updates
 
 · Disable OTA Updates
-· Block System Apple Apps from App Store</string>
+· Block System Apple Apps from App Store
+
+· Copyright 2024 Luxydev</string>
     <key>PayloadOrganization</key>
     <string>Developer longthinh</string>
     <key>PayloadIdentifier</key>
