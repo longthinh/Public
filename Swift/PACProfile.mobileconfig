@@ -3,18 +3,18 @@
 <plist version="1.0">
     <dict>
         <key>PayloadDisplayName</key>
-        <string>PAC Profile</string>
+        <string>iRestrict</string>
         <key>PayloadDescription</key>
         <string>Help docs
 
+Surge Network (VIF only)
+
+Quantumult X (normal mode)
+
+Copyright 2024 Luxydev
+
 · Disable OTA Updates
-· Block System Apple Apps from App Store
-
-· Quantumult X (normal mode)
-
-· Surge Network (VIF only)
-
-· Copyright 2024 Luxydev</string>
+· Block System Apple Apps from App Store</string>
         <key>PayloadOrganization</key>
         <string>Developer longthinh</string>
         <key>PayloadIdentifier</key>
