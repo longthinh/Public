@@ -3,7 +3,7 @@
 <plist version="1.0">
   <dict>
     <key>PayloadDisplayName</key>
-    <string>DoT Profile</string>
+    <string>iSafe</string>
     <key>PayloadDescription</key>
     <string>Help docs
 
@@ -11,10 +11,11 @@ This profile uses IP 127.0.0.1 (localhost) as a DNS over TLS (DoT) server
  
 Switch to DNS (Automatic) if you want to install System Apple Apps from App Store and allow OTA updates
 
-· Disable OTA Updates
-· Block System Apple Apps from App Store
+Copyright 2024 Luxydev
 
-· Copyright 2024 Luxydev</string>
+· Disable OTA Updates
+· Block System Apple Apps from App Store</string>
+
     <key>PayloadOrganization</key>
     <string>Developer longthinh</string>
     <key>PayloadIdentifier</key>
