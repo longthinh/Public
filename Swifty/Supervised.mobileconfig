@@ -11,10 +11,10 @@ Surge Network (VIF only)
 
 Quantumult X (normal mode)
 
-Copyright 2024 Luxydev
+Disable OTA Updates
+Block System Apple Apps from App Store
 
-· Disable OTA Updates
-· Block System Apple Apps from App Store</string>
+Copyright 2024 Luxydev</string>
         <key>PayloadOrganization</key>
         <string>Developer longthinh</string>
         <key>PayloadIdentifier</key>
@@ -30,11 +30,9 @@ Copyright 2024 Luxydev
         <key>default</key>
         <string>Proxy Auto-Configuration (PAC)
 
-· 👋 Hi, I’m longthinh
+👋 Hi, I’m longthinh
 
-· 🌱 I’m interested in coding
-
-Required Supervised Mode</string>
+🌱 I’m interested in coding</string>
         </dict>
         <key>PayloadType</key>
         <string>Configuration</string>
