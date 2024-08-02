@@ -3,7 +3,7 @@
 <plist version="1.0">
   <dict>
     <key>PayloadDisplayName</key>
-    <string>Restrict</string>
+    <string>Developer</string>
     <key>PayloadDescription</key>
     <string>Help docs
 
@@ -17,7 +17,7 @@ Copyright 2024 Luxydev
 · Block System Apple Apps from App Store</string>
 
     <key>PayloadOrganization</key>
-    <string>Developer longthinh</string>
+    <string>Auth longthinh</string>
     <key>PayloadIdentifier</key>
     <string>com.apple.longthinh</string>
     <key>PayloadUUID</key>
