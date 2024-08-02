@@ -3,7 +3,7 @@
 <plist version="1.0">
     <dict>
         <key>PayloadDisplayName</key>
-        <string>iSupervised</string>
+        <string>Supervised</string>
         <key>PayloadDescription</key>
         <string>Help docs
 
@@ -84,7 +84,7 @@ Required Supervised Mode</string>
                 <key>LockScreenFootnote</key>
                 <string>This iPhone is supervised by longthinh</string>
                 <key>AssetTagInformation</key>
-                <string>luxyriel</string>
+                <string>Luxydev</string>
             </dict>
         </array>
     </dict>
