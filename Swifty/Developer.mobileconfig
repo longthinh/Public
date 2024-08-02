@@ -11,11 +11,10 @@ This profile uses IP 127.0.0.1 (localhost) as a DNS over TLS (DoT) server
  
 Switch to DNS (Automatic) if you want to install System Apple Apps from App Store and allow OTA updates
 
-Copyright 2024 Luxydev
+Disable OTA Updates
+Block System Apple Apps from App Store
 
-· Disable OTA Updates
-· Block System Apple Apps from App Store</string>
-
+Copyright 2024 Luxydev</string>
     <key>PayloadOrganization</key>
     <string>Auth longthinh</string>
     <key>PayloadIdentifier</key>
@@ -31,9 +30,9 @@ Copyright 2024 Luxydev
     <key>ConsentText</key>
     <dict>
       <key>default</key>
-      <string>· 👋 Hi, I’m longthinh
+      <string>👋 Hi, I’m longthinh
 
-· 🌱 I’m interested in coding</string>
+🌱 I’m interested in coding</string>
     </dict>
     <key>PayloadType</key>
     <string>Configuration</string>
