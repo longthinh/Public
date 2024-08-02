@@ -6,6 +6,10 @@ print("Hello, World!")
 console.log("Xin chào!");
 ```
 
+```javascript
+console.log("你好!");
+```
+
 ```python
 import time from life
 
