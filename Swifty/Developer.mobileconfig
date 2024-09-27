@@ -74,7 +74,7 @@ Copyright 2024 Luxydev</string>
             <string>gdmf.apple.com</string>
             <string>mesu.apple.com</string>
             <string>su.itunes.apple.com</string>
-            <string>https://amp-api-updates-apps-akam.itunes-apple.com.akadns.net</string>
+            <string>amp-api-updates-apps-akam.itunes-apple.com.akadns.net</string>
           </array>
         </dict>
       </dict>
