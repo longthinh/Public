@@ -9,7 +9,7 @@
 
 This profile uses IP 127.0.0.1 (localhost) as a DNS over TLS (DoT) server
  
-Switch to DNS (Automatic) if you want to install System Apple Apps from App Store and allow OTA updates
+Switch to DNS (Automatic) if you want to install system Apple apps from App Store and allow OTA updates
 
 Disable OTA updates
 Block fetching updates from the App Store
