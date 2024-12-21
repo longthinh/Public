@@ -3,7 +3,7 @@
 <plist version="1.0">
   <dict>
     <key>PayloadDisplayName</key>
-    <string>Developer</string>
+    <string>CtrlLock Beta</string>
     <key>PayloadDescription</key>
     <string>Help docs
 
@@ -30,7 +30,7 @@ Copyright 2024 Luxydev</string>
     <key>ConsentText</key>
     <dict>
       <key>default</key>
-      <string>👋 Hi, I’m Luxydev (longthinh)
+      <string>👋 Hi, I’m Luxydev
 
 🌱 I’m interested in coding</string>
     </dict>
