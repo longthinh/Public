@@ -50247,7 +50247,7 @@ HOST-SUFFIX,lg-release-tracking-8080.gcld-line.com,REJECT
 HOST-SUFFIX,iemiq.com,REJECT
 HOST-SUFFIX,yun-hl.3g.qq.com,REJECT
 HOST-SUFFIX,up-hl.3g.qq.com,REJECT
-HOST-SUFFIX,analytics-*-nfl.yinzcam.com,REJECT
+HOST-SUFFIX,analytics-_-nfl.yinzcam.com,REJECT
 HOST-SUFFIX,prod.report.nacustomerexperience.citi.com,REJECT
 HOST-SUFFIX,mon.byteoversea.com,REJECT
 HOST-SUFFIX,fraud.adjoe.zone,REJECT
@@ -50342,7 +50342,7 @@ HOST-SUFFIX,log-tb.isnssdk.com,REJECT
 HOST-SUFFIX,mon.isnssdk.com,REJECT
 HOST-SUFFIX,logs.ironsrc.mobi,REJECT
 HOST-SUFFIX,events.mz.unity3d.com,REJECT
-HOST-SUFFIX,mon*-platform.tiktokv.com,REJECT
+HOST-SUFFIX,mon_-platform.tiktokv.com,REJECT
 HOST-SUFFIX,grs.dbankcloud.,REJECT
 HOST-SUFFIX,logservice.platform.dbankcloud.cn,REJECT
 HOST-SUFFIX,ubacollect.cloud.dbankcloud.cn,REJECT
@@ -50369,7 +50369,7 @@ HOST-SUFFIX,log1.apkomega.com,REJECT
 HOST-SUFFIX,log.pngindir.com,REJECT
 HOST-SUFFIX,log.happyapkdown.com,REJECT
 HOST-SUFFIX,static.fengkongcloud.com,REJECT
-HOST-SUFFIX,fp-*it.fengkongcloud.com,REJECT
+HOST-SUFFIX,fp-_it.fengkongcloud.com,REJECT
 HOST-SUFFIX,cloudconf.fengkongcloud.com,REJECT
 HOST-SUFFIX,tracker.fengkongcloud.com,REJECT
 HOST-SUFFIX,dm.pstatp.com,REJECT
@@ -50444,7 +50444,7 @@ HOST-SUFFIX,aff-policy.lbesecapi.com,REJECT
 HOST-SUFFIX,psi.lbesecapi.com,REJECT
 HOST-SUFFIX,report-ps.meettech.net,REJECT
 HOST-SUFFIX,f-log.grammarly.io,REJECT
-HOST-SUFFIX,log*-misc-lf.amemv.com,REJECT
+HOST-SUFFIX,log_-misc-lf.amemv.com,REJECT
 HOST-SUFFIX,msg.umengcloud.com,REJECT
 HOST-SUFFIX,ulogs.umeng.com,REJECT
 HOST-SUFFIX,ulogs.umengcloud.com,REJECT
