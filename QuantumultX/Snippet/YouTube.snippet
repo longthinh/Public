@@ -1,0 +1,7 @@
+ctier=(?!A) url 302 ctier=A
+
+^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|search|reel\/reel_watch_sequence|guide|account\/get_setting|get_watch) url script-response-body https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/QuantumultX/Snippet/YouTube/YouTube.js
+
+^https?:\/\/[\w-]+\.googlevideo\.com\/initplayback.+&oad url echo-response data-type=text data="Scripts/Value.js" echo-response https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/QuantumultX/Snippet/YouTube/Value.js
+
+hostname = youtubei.googleapis.com, s.youtube.com, youtube.com, *.googlevideo.com
