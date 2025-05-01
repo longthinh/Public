@@ -1,0 +1,49 @@
+#!name=Surge Premium Unlocker
+#!desc=Unlock Subscriptions for Various Apps via MITM
+#!system=ios
+
+[Script]
+Adapty = type=http-response,pattern=https:\/\/api\.adapty\.io\/api\/v1\/sdk\/analytics\/profiles,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/Adapty.js
+AdblockPro = type=http-response,pattern=https:\/\/api\.adblockpro\.app\/verify,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/AdblockPro.js
+AdGuardPro = type=http-response,pattern=^https:\/\/mobile-api\.adguard\.org\/api\/.+\/ios_validate_receipt\/.*$,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/AdGuardPro.js
+AlightMotion = type=http-response,pattern=https:\/\/us-central1-alight-creative\.cloudfunctions\.net\/getAccountStatusAndLicenses,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/AlightMotion.js
+AutoRC = type=http-response,pattern=^https:\/\/api\.revenuecat\.com\/.+\/(receipts$|subscribers\/[^/]+$),requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/AutoRC.js
+Carrot = type=http-response,pattern=https:\/\/carrotweather\.herokuapp\.com\/parse\/functions\/findSubscriptionsForUserId,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/Carrot.js
+edjingMix = type=http-response,pattern=https:\/\/api\.mwm-users\.com\/me\/features,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/EdjingMix.js
+eSound = type=http-response,pattern=https:\/\/api\.esound\.app\/account,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/eSound.js
+Facemoji = type=http-response,pattern=https:\/\/order\.creativeappnow\.com\/iap\/receipt,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/Facemoji.js
+Grammarly = type=http-response,pattern=^https:\/\/subscription\.grammarly\.com\/api\/v1\/subscription$,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/Grammarly.js
+iTunes = type=http-response,pattern=^https:\/\/buy\.itunes\.apple\.com\/verifyReceipt$,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/iTunes.js
+KineMaster = type=http-response,pattern=https:\/\/api-account\.kinemasters\.com\/v2\/user\/subscribe,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/KineMaster.js
+MuslimPro = type=http-response,pattern=https:\/\/us-central1-muslim-pro-app\.cloudfunctions\.net\/GetUserPremiumInfo,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/MuslimPro.js
+PicsArt = type=http-request,pattern=https:\/\/api\.picsart\.com\/gw-v2\/shop\/subscription\/apple\/purchases,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/PicsArt.js
+purchasely = type=http-response,pattern=https:\/\/api\.purchasely\.io\/paab\/user_purchases,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/Purchasely.js
+qonversion = type=http-response,pattern=https:\/\/api\.qonversion\.io\/v1\/user\/init,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/Qonversion.js
+readdle = type=http-response,pattern=https:\/\/license\.pdfexpert\.com\/api\/2\.0\/(calendarslite|pdfexpert6|documents)\/subscription\/(refresh|check),requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/Readdle.js
+SandBox = type=http-response,pattern=https:\/\/api\.sandbox\.love\/accounts\/current,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/SandBox.js
+SongShift = type=http-response,pattern=https:\/\/subscriptions\.songshift\.com\/validate,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/SongShift.js
+Vaia = type=http-response,pattern=https:\/\/prod\.studysmarter\.de\/payments\/info,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/Vaia.js
+VivaCut = type=http-response,pattern=https:\/\/api-fra\.vivacut\.com\/api\/rest\/commerce\/integrate\/vip\/perform,requires-body=1,max-size=0,script-url=https://apptesters.org/wp-content/uploads/VivaCut.js
+
+[MITM]
+
+hostname = %APPEND%
+  api.revenuecat.com,
+  buy.itunes.apple.com,
+  api.picsart.com,
+  api-account.kinemasters.com,
+  us-central1-alight-creative.cloudfunctions.net,
+  api.adapty.io,
+  carrotweather.herokuapp.com,
+  order.creativeappnow.com,
+  api.mwm-users.com,
+  us-central1-muslim-pro-app.cloudfunctions.net,
+  prod.studysmarter.de,
+  api.qonversion.io,
+  subscription.grammarly.com,
+  api.esound.app,
+  api.purchasely.io,
+  api.sandbox.love,
+  subscriptions.songshift.com,
+  api.adblockpro.app,
+  mobile-api.adguard.org
