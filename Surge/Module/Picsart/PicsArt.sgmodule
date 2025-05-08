@@ -1,0 +1,11 @@
+#!name=PicsArt
+#!desc=sgmodule
+#!system=ios
+
+[Script]
+
+PicsArt = type=http-request,pattern=https://api.picsart.com/gw-v2/shop/subscription/apple/purchases,requires-body=1,max-size=0,script-path=Scripts/PicsArt.js
+
+[MITM]
+
+hostname = %APPEND% api.picsart.com
