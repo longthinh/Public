@@ -6,17 +6,14 @@
     <string>devOS 18</string>
     <key>PayloadDescription</key>
     <string>Help docs
-
-This profile uses IP 127.0.0.1 (localhost) as a DNS over TLS (DoT) server
  
-Switch to DNS (Automatic) if you want to install system Apple apps from App Store and allow OTA updates
+Switch to DNS Automatic if you want to install system apps from App Store and allow OTA updates.
 
-Disable OTA updates
-Block fetching updates from the App Store
-
-Copyright 2024 Luxydev</string>
+· Disable OTA updates
+· Block fetching updates from the App Store
+    </string>
     <key>PayloadOrganization</key>
-    <string>Auth longthinh</string>
+    <string>Luxydev</string>
     <key>PayloadIdentifier</key>
     <string>com.apple.longthinh</string>
     <key>PayloadUUID</key>
@@ -30,9 +27,7 @@ Copyright 2024 Luxydev</string>
     <key>ConsentText</key>
     <dict>
       <key>default</key>
-      <string>👋 Hi, I’m Luxydev
-
-🌱 I’m interested in coding</string>
+      <string>This profile is configured to use DNS over TLS (DoT) through localhost — ensuring your DNS queries remain private and secure.</string>
     </dict>
     <key>PayloadType</key>
     <string>Configuration</string>
@@ -48,7 +43,7 @@ Copyright 2024 Luxydev</string>
     <array>
       <dict>
         <key>PayloadDisplayName</key>
-        <string>DoT Server</string>
+        <string>Manual</string>
         <key>PayloadOrganization</key>
         <string>localhost</string>
         <key>PayloadIdentifier</key>
