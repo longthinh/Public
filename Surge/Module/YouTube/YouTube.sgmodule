@@ -1,0 +1,19 @@
+#!name=YouTube
+#!desc=sgmodule
+#!system=ios
+
+[Rule]
+AND,((DOMAIN-SUFFIX,googlevideo.com), (PROTOCOL,UDP)),REJECT
+AND,((DOMAIN,youtubei.googleapis.com), (PROTOCOL,UDP)),REJECT
+
+[Rewrite]
+ctier=(?!A) ctier=A 302
+
+[Script]
+YouTube = type=http-response,pattern=^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|search|reel\/reel_watch_sequence|guide|account\/get_setting|get_watch),requires-body=1,max-size=-1,binary-body-mode=1,engine={{{Script execution engine}}},script-path=https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Surge/Module/YouTube/YouTube.js,script-update-interval=3600,argument="{"lyricLang":"{{{Lyrics translation language}}}","captionLang":"{{{Subtitle translation language}}}","blockUpload":{{{Block upload button}}},"blockImmersive":{{{Block selection button}}},"debug":{{{Enable debug mode}}}}"
+
+[Map Local]
+^https?:\/\/[\w-]+\.googlevideo\.com\/initplayback.+&oad data-type=text data="https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Surge/Module/YouTube/Value.js" status-code=502
+
+[MITM]
+hostname = %APPEND% *.googlevideo.com, youtubei.googleapis.com

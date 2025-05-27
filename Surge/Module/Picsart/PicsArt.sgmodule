@@ -4,7 +4,7 @@
 
 [Script]
 
-PicsArt = type=http-request,pattern=https://api.picsart.com/gw-v2/shop/subscription/apple/purchases,requires-body=1,max-size=0,script-path=Scripts/https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Surge/Module/Picsart/PicsArt.js
+PicsArt = type=http-request,pattern=https://api.picsart.com/gw-v2/shop/subscription/apple/purchases,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Surge/Module/Picsart/PicsArt.js,script-update-interval=3600
 
 [MITM]
 
