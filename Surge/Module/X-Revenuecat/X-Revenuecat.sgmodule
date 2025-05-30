@@ -9,6 +9,7 @@
 
 [Script]
 X-Revenuecat = type=http-response, pattern=^https:\/\/api\.(revenuecat|rc-backup)\.com\/.+\/(receipts$|subscribers\/[^/]+$),requires-body=true,max-size=-1,script-path=https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Surge/Module/X-Revenuecat/X-Revenuecat.js,script-update-interval=3600
+
 Delete Header = type=http-request, pattern=^https:\/\/api\.(revenuecat|rc-backup)\.com\/.+\/(receipts|subscribers),script-path=https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Surge/Module/X-Revenuecat/deleteHeader.js,script-update-interval=3600
 
 [MITM]
