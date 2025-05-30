@@ -1,5 +1,4 @@
 /**
- * @longthinh
  > Name：deleteHeader
  > Update：2024-02-03
  > Me：https://t.me/longthinh
