@@ -1,4 +1,5 @@
 /**
+ * @longthinh
  > Name：deleteHeader
  > Update：2024-02-03
  > Me：https://t.me/longthinh
@@ -212,7 +213,7 @@ const mapping = {
   Wozi: ["wozi_pro_2023"],
 };
 
-var _0xodF = "1.0.2";
+var _0xodF = "jsjiami.com.v7";
 function _0x52ea(_0x3ea8b3, _0x5559a4) {
   var _0x3b9dd1 = _0x3b9d();
   return (
@@ -519,4 +520,4 @@ if (match) {
       ddgksf2021);
 console[_0x31b760(0x18a, "!sYB")](_0x31b760(0x170, "VEJ(")),
   $done({ body: JSON[_0x31b760(0x186, "nS%t")](obj) });
-var version_ = "1.0.2";
+var version_ = "jsjiami.com.v7";
