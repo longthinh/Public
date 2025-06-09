@@ -14,7 +14,7 @@ function flag(x) {
   return flags.get(x.toUpperCase());
 }
 
-let appId = ["appld",Combined Text];
+let appId = [""];
 
 if ($.read("appId") != "" && $.read("appId") != undefined) {
   appId = $.read("appId").split(",");
