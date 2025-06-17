@@ -73,7 +73,7 @@ function getData(x) {
 // Hàm chính xử lý dữ liệu từ App Store và gửi thông báo nếu cần
 async function postData(d) {
   try {
-    // Đọc dữ liệu lần trước từ bộ nhớ cache
+    // Đọc dữ liệu lần trước đã lưu
     let showData = $.read("compare");
     if (showData === "" || showData === undefined) {
       showData = {};
@@ -82,9 +82,8 @@ async function postData(d) {
       $.info(showData);
     }
 
-    let infos = {}; // Dữ liệu mới sẽ lưu lại
+    let infos = {}; // Dữ liệu mới để lưu lại so sánh
 
-    // Gửi request cho từng khu vực
     await Promise.all(
       Object.keys(d).map(async (k) => {
         let config = {
@@ -96,25 +95,27 @@ async function postData(d) {
           .then((response) => {
             let results = JSON.parse(response.body).results;
 
-            // Sắp xếp kết quả theo tên app
             results.sort((a, b) => a.trackName.localeCompare(b.trackName));
 
             if (Array.isArray(results) && results.length > 0) {
               results.forEach((x) => {
-                // Lưu thông tin app hiện tại vào `infos`
+                // Lưu thông tin app hiện tại
                 infos[x.trackId] = {
-                  n: x.trackName,       // Tên app
-                  v: x.version,         // Phiên bản
-                  p: x.formattedPrice,  // Giá hiển thị (chuỗi)
-                  pr: x.price,          // Giá dạng số (sử dụng để so sánh chính xác)
+                  n: x.trackName,
+                  v: x.version,
+                  p: x.formattedPrice,
+                  pr: x.price,
                 };
 
-                // Nếu đã có dữ liệu trước đó → kiểm tra thay đổi
+                // Nếu app đã từng lưu → kiểm tra thay đổi
                 if (showData.hasOwnProperty(x.trackId)) {
                   const prev = showData[x.trackId];
-                  $.log(`Check ${x.trackName}: oldPrice=${prev.pr}, newPrice=${x.price}`);
 
-                  // So sánh giá theo dạng số
+                  // Ghi log chi tiết + dòng trắng cho dễ đọc
+                  $.log(`Check ${x.trackName}: oldPrice=${prev.pr}, newPrice=${x.price}`);
+                  console.log(""); // xuống dòng giữa các log
+
+                  // Kiểm tra thay đổi giá (dùng giá số)
                   if (x.price !== prev.pr) {
                     const notifyMessage = `${x.trackName} · ${x.formattedPrice}`;
                     notifys.push(notifyMessage);
@@ -124,7 +125,7 @@ async function postData(d) {
                     }
                   }
 
-                  // So sánh phiên bản nếu có cập nhật
+                  // Kiểm tra thay đổi version
                   if (x.version !== prev.v) {
                     const notifyMessage = `${x.trackName} · ${x.version}`;
                     notifys.push(notifyMessage);
@@ -134,7 +135,7 @@ async function postData(d) {
                     }
                   }
                 } else {
-                  // Lần đầu kiểm tra app này → thông báo luôn cả giá và phiên bản
+                  // App mới lần đầu theo dõi → thông báo cả giá và version
                   const notifyPriceMessage = `${x.trackName} · ${x.formattedPrice}`;
                   const notifyVersionMessage = `${x.trackName} · ${x.version}`;
                   notifys.push(notifyPriceMessage);
@@ -147,6 +148,7 @@ async function postData(d) {
                 }
               });
             }
+
             return Promise.resolve();
           })
           .catch((e) => {
@@ -155,18 +157,19 @@ async function postData(d) {
       })
     );
 
-    // Ghi lại dữ liệu `compare` mới để lần sau so sánh
+    // Ghi lại thông tin mới sau khi so sánh xong
     $.write(JSON.stringify(infos), "compare");
+    $.log("Success"); // Ghi log xác nhận đã lưu xong dữ liệu
 
+    // Kết thúc nếu có thông báo
     if (notifys.length > 0) {
       $.done();
     } else {
+      // Tính thời gian thực thi
       let endTime = new Date().getTime();
       let executionTime = endTime - startTime;
       let speedNotification = getSpeedNotification(executionTime);
-      console.log(
-        `\nTimeout ${executionTime}ms - Network speed: ${speedNotification}`
-      );
+      console.log(`\nTimeout ${executionTime}ms - Network speed: ${speedNotification}`);
       $.done();
     }
   } catch (e) {
