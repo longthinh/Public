@@ -112,8 +112,7 @@ async function postData(d) {
                   const prev = showData[x.trackId];
 
                   // Ghi log chi tiết + dòng trắng cho dễ đọc
-                  //$.log(`${x.trackName}\n→ oldPrice = ${prev.pr} && newPrice = ${x.price}`);
-                  $.log(`${x.trackName}\n→ oldPrice = ${formatCurrency(prev.pr)} && newPrice = ${formatCurrency(x.price)}`);
+                  $.log(`${x.trackName}\n→ oldPrice = ${prev.p} && newPrice = ${x.formattedPrice}`);
                   console.log(""); // xuống dòng giữa các log
 
                   // Kiểm tra thay đổi giá (dùng giá số)
@@ -176,19 +175,6 @@ async function postData(d) {
   } catch (e) {
     $.error(`postData exception: ${e}`);
   }
-}
-
-// Định dạng giá tiền theo định dạng tiền tệ Việt Nam (hoặc USD nếu cần)
-function formatCurrency(value, currency = 'VND') {
-  if (!value) return '';
-  const number = parseFloat(value);
-  if (isNaN(number)) return value;
-
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: currency === 'USD' ? 2 : 0
-  }).format(number);
 }
 
 // Tính tốc độ xử lý để log
