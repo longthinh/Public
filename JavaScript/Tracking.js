@@ -1,14 +1,14 @@
 /**
  * @longthinh
- * Script theo dõi và thông báo thay đổi giá app trên App Store.
- * Đã sửa lỗi thông báo sai giá bằng cách so sánh giá số (`price`) thay vì chuỗi `formattedPrice`.
+ * Script to monitor and notify App Store price changes.
+ * Fixed incorrect price notification by comparing numeric price instead of string formattedPrice.
  */
 
-const $ = new API("AppStore", true); // Khởi tạo đối tượng tiện ích
+const $ = new API("Tracking", true); // Initialize the object
 
-let region = "VN"; // Quốc gia mặc định
+let region = "VN"; // Default region
 
-// Trả về cờ quốc gia (hiện tắt vì để trống)
+// Flag country function
 function flag(x) {
   var flags = new Map([
     ["US", ""], // ["US", "🇺🇸"],
@@ -17,26 +17,35 @@ function flag(x) {
   return flags.get(x.toUpperCase());
 }
 
-// Danh sách appId mặc định nếu không có thiết lập
-let appId = ["775737172", "1312014438", "1442620678", "1443988620", "1462586500", "1481781647", "1527036273", "1548193893"];
+// List appId
+let appId = [
+  "775737172",
+  "1312014438",
+  "1442620678",
+  "1443988620",
+  "1462586500",
+  "1481781647",
+  "1527036273",
+  "1548193893",
+];
 
-// Ghi đè appId nếu người dùng đã lưu cấu hình trước đó
+// Override the appId if the user has previously saved a configuration
 if ($.read("appId") != "" && $.read("appId") != undefined) {
   appId = $.read("appId").split(",");
 }
 
-// Ghi đè khu vực nếu có cấu hình
+// Override the region if a configuration exists
 if ($.read("region") != "" && $.read("region") != undefined) {
   region = $.read("region");
 }
 
-getData(appId); // Bắt đầu xử lý dữ liệu
+getData(appId); // Start processing appId data
 
-let notifys = []; // Mảng chứa thông báo sẽ gửi
-let sentNotifications = {}; // Tránh gửi trùng app
-let startTime = new Date().getTime(); // Bắt đầu đo thời gian thực thi
+let notifys = []; // Array containing the notifications to be sent
+let sentNotifications = {}; // Avoid sending duplicate apps
+let startTime = new Date().getTime(); // Time processing
 
-// Chuyển dữ liệu appId thành định dạng theo vùng để gửi request
+// Convert the appId data into region-based format to send the request
 function getData(x) {
   let matchData = {};
   x.forEach((n) => {
@@ -70,10 +79,10 @@ function getData(x) {
   }
 }
 
-// Hàm chính xử lý dữ liệu từ App Store và gửi thông báo nếu cần
+// Function processing data and comparing with previous data
 async function postData(d) {
   try {
-    // Đọc dữ liệu lần trước đã lưu
+    // Reading previous data from cache
     let showData = $.read("compare");
     if (showData === "" || showData === undefined) {
       showData = {};
@@ -82,12 +91,16 @@ async function postData(d) {
       $.info(showData);
     }
 
-    let infos = {}; // Dữ liệu mới để lưu lại so sánh
+    let infos = {}; // New data to save compare
 
     await Promise.all(
       Object.keys(d).map(async (k) => {
         let config = {
-          url: "https://itunes.apple.com/lookup?id=" + d[k].join(",") + "&country=" + k,
+          url:
+            "https://itunes.apple.com/lookup?id=" +
+            d[k].join(",") +
+            "&country=" +
+            k,
         };
 
         await $.http
@@ -99,7 +112,7 @@ async function postData(d) {
 
             if (Array.isArray(results) && results.length > 0) {
               results.forEach((x) => {
-                // Lưu thông tin app hiện tại
+                // Saved info app currently
                 infos[x.trackId] = {
                   n: x.trackName,
                   v: x.version,
@@ -107,15 +120,17 @@ async function postData(d) {
                   pr: x.price,
                 };
 
-                // Nếu app đã từng lưu → kiểm tra thay đổi
+                // If existing data, compare with previous
                 if (showData.hasOwnProperty(x.trackId)) {
                   const prev = showData[x.trackId];
 
-                  // Ghi log chi tiết + dòng trắng cho dễ đọc
-                  $.log(`${x.trackName}\noldPrice= ${prev.p}\nnewPrice= ${x.formattedPrice} ↵`);
-                  //console.log(""); // xuống dòng giữa các log
+                  // write log debug
+                  $.log(
+                    `${x.trackName}\noldPrice= ${prev.p}\nnewPrice= ${x.formattedPrice} ↵`
+                  );
+                  //console.log(""); // endl
 
-                  // Kiểm tra thay đổi giá (dùng giá số)
+                  // Check price if changed
                   if (x.price !== prev.pr) {
                     const notifyMessage = `${x.trackName} → ${x.formattedPrice}`;
                     notifys.push(notifyMessage);
@@ -125,7 +140,7 @@ async function postData(d) {
                     }
                   }
 
-                  // Kiểm tra thay đổi version
+                  // Check version if changed
                   if (x.version !== prev.v) {
                     const notifyMessage = `${x.trackName} → ${x.version}`;
                     notifys.push(notifyMessage);
@@ -135,7 +150,7 @@ async function postData(d) {
                     }
                   }
                 } else {
-                  // App mới lần đầu theo dõi → thông báo cả giá và version
+                  // New app added - two notifications
                   const notifyPriceMessage = `${x.trackName} → ${x.formattedPrice}`;
                   const notifyVersionMessage = `${x.trackName} → ${x.version}`;
                   notifys.push(notifyPriceMessage);
@@ -157,19 +172,17 @@ async function postData(d) {
       })
     );
 
-    // Ghi lại thông tin mới sau khi so sánh xong
+    // Write new data to cache
     $.write(JSON.stringify(infos), "compare");
-    $.log("Success"); // Ghi log xác nhận đã lưu xong dữ liệu
 
-    // Kết thúc nếu có thông báo
+    let endTime = new Date().getTime();
+    let executionTime = endTime - startTime;
+
+    $.log(`Timeout ${executionTime}ms\n`);
+
     if (notifys.length > 0) {
       $.done();
     } else {
-      // Tính thời gian thực thi
-      let endTime = new Date().getTime();
-      let executionTime = endTime - startTime;
-      let speedNotification = getSpeedNotification(executionTime);
-      console.log(`Timeout ${executionTime}ms - Network speed: ${speedNotification}\n`);
       $.done();
     }
   } catch (e) {
@@ -177,48 +190,30 @@ async function postData(d) {
   }
 }
 
-// Tính tốc độ xử lý để log
-function getSpeedNotification(executionTime) {
-  if (executionTime >= 500) return "very slow";
-  else if (executionTime >= 400) return "slow";
-  else if (executionTime >= 300) return "normal";
-  else if (executionTime >= 200) return "fast";
-  else if (executionTime >= 0) return "very fast";
-  return "unknown";
-}
-
-// Trả về biểu tượng emoji (hiện không dùng nhiều)
-function emoji(x) {
-  var emoji = new Map([
-    ["emp", ""],
-    ["bel", "🔔"],
-    ["bud", "🌱"],
-  ]);
-  return emoji.get(x);
-}
-
-// Hàm gửi thông báo
+// Notification function
 function notify(notifys) {
   notifys = notifys.join(`\n`);
   console.log(notifys);
-  $.notify(`${flag(region)}App Store${emoji("emp")}`, ``, notifys);
+  $.notify(`${flag(region)}App Store`, ``, notifys);
 }
 
-// Xác định môi trường QX hay Surge
+// ENV
 function ENV() {
   const isQX = typeof $task !== "undefined";
-  const isSurge = typeof $httpClient !== "undefined" && typeof $loon === "undefined";
+  const isSurge =
+    typeof $httpClient !== "undefined" && typeof $loon === "undefined";
   return {
     isQX,
     isSurge,
   };
 }
 
-// Thư viện gửi HTTP request phù hợp với QX/Surge
+// Library for HTTP request
 function HTTP(defaultOptions = { baseURL: "" }) {
   const { isQX, isSurge } = ENV();
   const methods = ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"];
-  const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
+  const URL_REGEX =
+    /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
 
   function send(method, options) {
     options = typeof options === "string" ? { url: options } : options;
@@ -245,11 +240,12 @@ function HTTP(defaultOptions = { baseURL: "" }) {
       worker = new Promise((resolve, reject) => {
         $httpClient[method.toLowerCase()](options, (err, response, body) => {
           if (err) reject(err);
-          else resolve({
-            statusCode: response.status || response.statusCode,
-            headers: response.headers,
-            body,
-          });
+          else
+            resolve({
+              statusCode: response.status || response.statusCode,
+              headers: response.headers,
+              body,
+            });
         });
       });
     }
@@ -260,12 +256,16 @@ function HTTP(defaultOptions = { baseURL: "" }) {
       ? new Promise((_, reject) => {
           const timeoutid = setTimeout(() => {
             events.onTimeout();
-            reject(`${method} URL: ${options.url} exceeds timeout ${timeout} ms`);
+            reject(
+              `${method} URL: ${options.url} exceeds timeout ${timeout} ms`
+            );
           }, timeout);
         })
       : null;
 
-    return (timer ? Promise.race([timer, worker]) : worker).then(events.onResponse);
+    return (timer ? Promise.race([timer, worker]) : worker).then(
+      events.onResponse
+    );
   }
 
   const http = {};
@@ -275,7 +275,7 @@ function HTTP(defaultOptions = { baseURL: "" }) {
   return http;
 }
 
-// Thư viện API tiện ích để đọc/ghi cache, log, notify
+// Library API read/write cache, log, notify
 function API(name = "untitled", debug = false) {
   const { isQX, isSurge } = ENV();
 
@@ -346,7 +346,10 @@ function API(name = "untitled", debug = false) {
         $notification.post(
           title,
           subtitle,
-          content + (options["media-url"] ? "\nmultimedia:" + options["media-url"] : ""),
+          content +
+            (options["media-url"]
+              ? "\nmultimedia:" + options["media-url"]
+              : ""),
           { url: options["open-url"] }
         );
       }
