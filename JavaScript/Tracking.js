@@ -169,7 +169,7 @@ async function postData(d) {
       let endTime = new Date().getTime();
       let executionTime = endTime - startTime;
       let speedNotification = getSpeedNotification(executionTime);
-      console.log(`\nTimeout ${executionTime}ms - Network speed: ${speedNotification}\n`);
+      console.log(`Timeout ${executionTime}ms - Network speed: ${speedNotification}\n`);
       $.done();
     }
   } catch (e) {
