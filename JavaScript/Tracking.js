@@ -1,11 +1,14 @@
 /**
  * @longthinh
+ * Script theo dõi và thông báo thay đổi giá app trên App Store.
+ * Đã sửa lỗi thông báo sai giá bằng cách so sánh giá số (`price`) thay vì chuỗi `formattedPrice`.
  */
 
-const $ = new API("AppStore", true);
+const $ = new API("AppStore", true); // Khởi tạo đối tượng tiện ích
 
-let region = "VN";
+let region = "VN"; // Quốc gia mặc định
 
+// Trả về cờ quốc gia (hiện tắt vì để trống)
 function flag(x) {
   var flags = new Map([
     ["US", ""], // ["US", "🇺🇸"],
@@ -14,24 +17,26 @@ function flag(x) {
   return flags.get(x.toUpperCase());
 }
 
-let appId = ["775737172","1312014438","1442620678","1443988620","1462586500","1481781647","1527036273","1548193893"];
+// Danh sách appId mặc định nếu không có thiết lập
+let appId = ["775737172", "1312014438", "1442620678", "1443988620", "1462586500", "1481781647", "1527036273", "1548193893"];
 
+// Ghi đè appId nếu người dùng đã lưu cấu hình trước đó
 if ($.read("appId") != "" && $.read("appId") != undefined) {
   appId = $.read("appId").split(",");
 }
 
+// Ghi đè khu vực nếu có cấu hình
 if ($.read("region") != "" && $.read("region") != undefined) {
   region = $.read("region");
 }
 
-getData(appId);
+getData(appId); // Bắt đầu xử lý dữ liệu
 
-let notifys = [];
+let notifys = []; // Mảng chứa thông báo sẽ gửi
+let sentNotifications = {}; // Tránh gửi trùng app
+let startTime = new Date().getTime(); // Bắt đầu đo thời gian thực thi
 
-let sentNotifications = {};
-
-let startTime = new Date().getTime();
-
+// Chuyển dữ liệu appId thành định dạng theo vùng để gửi request
 function getData(x) {
   let matchData = {};
   x.forEach((n) => {
@@ -59,13 +64,16 @@ function getData(x) {
       notifys.push(`appId Invalid: ${n}`);
     }
   });
+
   if (Object.keys(matchData).length > 0) {
     postData(matchData);
   }
 }
 
+// Hàm chính xử lý dữ liệu từ App Store và gửi thông báo nếu cần
 async function postData(d) {
   try {
+    // Đọc dữ liệu lần trước từ bộ nhớ cache
     let showData = $.read("compare");
     if (showData === "" || showData === undefined) {
       showData = {};
@@ -73,16 +81,14 @@ async function postData(d) {
       showData = JSON.parse(showData);
       $.info(showData);
     }
-    let infos = {};
 
+    let infos = {}; // Dữ liệu mới sẽ lưu lại
+
+    // Gửi request cho từng khu vực
     await Promise.all(
       Object.keys(d).map(async (k) => {
         let config = {
-          url:
-            "https://itunes.apple.com/lookup?id=" +
-            d[k].join(",") +
-            "&country=" +
-            k,
+          url: "https://itunes.apple.com/lookup?id=" + d[k].join(",") + "&country=" + k,
         };
 
         await $.http
@@ -90,42 +96,45 @@ async function postData(d) {
           .then((response) => {
             let results = JSON.parse(response.body).results;
 
+            // Sắp xếp kết quả theo tên app
             results.sort((a, b) => a.trackName.localeCompare(b.trackName));
 
             if (Array.isArray(results) && results.length > 0) {
               results.forEach((x) => {
+                // Lưu thông tin app hiện tại vào `infos`
                 infos[x.trackId] = {
-                  n: x.trackName,
-                  v: x.version,
-                  p: x.formattedPrice,
+                  n: x.trackName,       // Tên app
+                  v: x.version,         // Phiên bản
+                  p: x.formattedPrice,  // Giá hiển thị (chuỗi)
+                  pr: x.price,          // Giá dạng số (sử dụng để so sánh chính xác)
                 };
 
+                // Nếu đã có dữ liệu trước đó → kiểm tra thay đổi
                 if (showData.hasOwnProperty(x.trackId)) {
-                  if (
-                    JSON.stringify(showData[x.trackId]) !==
-                    JSON.stringify(infos[x.trackId])
-                  ) {
-                    if (x.formattedPrice !== showData[x.trackId].p) {
-                      const notifyMessage = `${x.trackName} · ${x.formattedPrice}`;
-                      notifys.push(notifyMessage);
+                  const prev = showData[x.trackId];
+                  $.log(`Check ${x.trackName}: oldPrice=${prev.pr}, newPrice=${x.price}`);
 
-                      if (!sentNotifications[x.trackId]) {
-                        notify([notifyMessage]);
-                        sentNotifications[x.trackId] = true;
-                      }
+                  // So sánh giá theo dạng số
+                  if (x.price !== prev.pr) {
+                    const notifyMessage = `${x.trackName} · ${x.formattedPrice}`;
+                    notifys.push(notifyMessage);
+                    if (!sentNotifications[x.trackId]) {
+                      notify([notifyMessage]);
+                      sentNotifications[x.trackId] = true;
                     }
+                  }
 
-                    if (x.version !== showData[x.trackId].v) {
-                      const notifyMessage = `${x.trackName} · ${x.version}`;
-                      notifys.push(notifyMessage);
-
-                      if (!sentNotifications[x.trackId]) {
-                        notify([notifyMessage]);
-                        sentNotifications[x.trackId] = true;
-                      }
+                  // So sánh phiên bản nếu có cập nhật
+                  if (x.version !== prev.v) {
+                    const notifyMessage = `${x.trackName} · ${x.version}`;
+                    notifys.push(notifyMessage);
+                    if (!sentNotifications[x.trackId]) {
+                      notify([notifyMessage]);
+                      sentNotifications[x.trackId] = true;
                     }
                   }
                 } else {
+                  // Lần đầu kiểm tra app này → thông báo luôn cả giá và phiên bản
                   const notifyPriceMessage = `${x.trackName} · ${x.formattedPrice}`;
                   const notifyVersionMessage = `${x.trackName} · ${x.version}`;
                   notifys.push(notifyPriceMessage);
@@ -141,13 +150,13 @@ async function postData(d) {
             return Promise.resolve();
           })
           .catch((e) => {
-            console.log(e);
+            $.error(`Fetch failed: ${e}`);
           });
       })
     );
 
-    infos = JSON.stringify(infos);
-    $.write(infos, "compare");
+    // Ghi lại dữ liệu `compare` mới để lần sau so sánh
+    $.write(JSON.stringify(infos), "compare");
 
     if (notifys.length > 0) {
       $.done();
@@ -156,37 +165,26 @@ async function postData(d) {
       let executionTime = endTime - startTime;
       let speedNotification = getSpeedNotification(executionTime);
       console.log(
-        `\n` +
-          "Timeout " +
-          executionTime +
-          "ms" +
-          " - " +
-          "Network speed: " +
-          speedNotification
+        `\nTimeout ${executionTime}ms - Network speed: ${speedNotification}`
       );
       $.done();
     }
   } catch (e) {
-    console.log(e);
+    $.error(`postData exception: ${e}`);
   }
 }
 
+// Tính tốc độ xử lý để log
 function getSpeedNotification(executionTime) {
-  if (executionTime >= 500) {
-    return "very slow";
-  } else if (executionTime >= 400) {
-    return "slow";
-  } else if (executionTime >= 300) {
-    return "normal";
-  } else if (executionTime >= 200) {
-    return "fast";
-  } else if (executionTime >= 0) {
-    return "very fast";
-  }
+  if (executionTime >= 500) return "very slow";
+  else if (executionTime >= 400) return "slow";
+  else if (executionTime >= 300) return "normal";
+  else if (executionTime >= 200) return "fast";
+  else if (executionTime >= 0) return "very fast";
   return "unknown";
 }
 
-
+// Trả về biểu tượng emoji (hiện không dùng nhiều)
 function emoji(x) {
   var emoji = new Map([
     ["emp", ""],
@@ -196,12 +194,14 @@ function emoji(x) {
   return emoji.get(x);
 }
 
+// Hàm gửi thông báo
 function notify(notifys) {
   notifys = notifys.join(`\n`);
   console.log(notifys);
   $.notify(`${flag(region)}App Store${emoji("emp")}`, ``, notifys);
 }
 
+// Xác định môi trường QX hay Surge
 function ENV() {
   const isQX = typeof $task !== "undefined";
   const isSurge = typeof $httpClient !== "undefined" && typeof $loon === "undefined";
@@ -211,6 +211,7 @@ function ENV() {
   };
 }
 
+// Thư viện gửi HTTP request phù hợp với QX/Surge
 function HTTP(defaultOptions = { baseURL: "" }) {
   const { isQX, isSurge } = ENV();
   const methods = ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"];
@@ -271,6 +272,7 @@ function HTTP(defaultOptions = { baseURL: "" }) {
   return http;
 }
 
+// Thư viện API tiện ích để đọc/ghi cache, log, notify
 function API(name = "untitled", debug = false) {
   const { isQX, isSurge } = ENV();
 
