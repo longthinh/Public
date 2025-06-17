@@ -112,8 +112,8 @@ async function postData(d) {
                   const prev = showData[x.trackId];
 
                   // Ghi log chi tiết + dòng trắng cho dễ đọc
-                  $.log(`${x.trackName}\noldPrice=${prev.pr}\nnewPrice=${x.price}`);
-                  console.log("<<"); // xuống dòng giữa các log
+                  $.log(`${x.trackName}\n<< oldPrice=${prev.pr} && newPrice=${x.price}`);
+                  //console.log("<<"); // xuống dòng giữa các log
 
                   // Kiểm tra thay đổi giá (dùng giá số)
                   if (x.price !== prev.pr) {
