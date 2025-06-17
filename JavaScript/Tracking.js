@@ -58,10 +58,10 @@ function getData(x) {
           matchData[n_n[1]].push(n_n[0]);
         }
       } else {
-        notifys.push(`appId Invalid: ${n}`);
+        notifys.push(`appId invalid: ${n}`);
       }
     } else {
-      notifys.push(`appId Invalid: ${n}`);
+      notifys.push(`appId invalid: ${n}`);
     }
   });
 
@@ -75,11 +75,15 @@ async function postData(d) {
   try {
     // Đọc dữ liệu lần trước đã lưu
     let showData = $.read("compare");
-    if (showData === "" || showData === undefined) {
+    if (!showData) {
       showData = {};
     } else {
-      showData = JSON.parse(showData);
-      $.info(showData);
+      try {
+        showData = JSON.parse(showData);
+      } catch (e) {
+        $.error(`Failed to parse saved data: ${e}`);
+        showData = {};
+      }
     }
 
     let infos = {}; // Dữ liệu mới để lưu lại so sánh
@@ -99,7 +103,7 @@ async function postData(d) {
 
             if (Array.isArray(results) && results.length > 0) {
               results.forEach((x) => {
-                // Lưu thông tin app hiện tại
+                // Lưu dữ liệu hiện tại vào object để so sánh và ghi sau cùng
                 infos[x.trackId] = {
                   n: x.trackName,
                   v: x.version,
@@ -107,17 +111,18 @@ async function postData(d) {
                   pr: x.price,
                 };
 
-                // Nếu app đã từng lưu → kiểm tra thay đổi
-                if (showData.hasOwnProperty(x.trackId)) {
-                  const prev = showData[x.trackId];
+                const prev = showData[x.trackId];
 
-                  // Ghi log chi tiết + dòng trắng cho dễ đọc
-                  $.log(`Check ${x.trackName}: oldPrice=${prev.pr}, newPrice=${x.price}`);
-                  console.log(""); // xuống dòng giữa các log
+                if (prev) {
+                  // Log kiểm tra chi tiết
+                  $.log(`→ ${x.trackName}`);
+                  $.log(`Price: old=${prev.pr} | new=${x.price}`);
+                  $.log(`Version: old=${prev.v} | new=${x.version}`);
+                  console.log(""); // Dòng trắng
 
-                  // Kiểm tra thay đổi giá (dùng giá số)
+                  // So sánh giá
                   if (x.price !== prev.pr) {
-                    const notifyMessage = `${x.trackName} · ${x.formattedPrice}`;
+                    const notifyMessage = `${x.trackName} → ${x.formattedPrice}`;
                     notifys.push(notifyMessage);
                     if (!sentNotifications[x.trackId]) {
                       notify([notifyMessage]);
@@ -125,9 +130,9 @@ async function postData(d) {
                     }
                   }
 
-                  // Kiểm tra thay đổi version
+                  // So sánh version
                   if (x.version !== prev.v) {
-                    const notifyMessage = `${x.trackName} · ${x.version}`;
+                    const notifyMessage = `${x.trackName} → ${x.version}`;
                     notifys.push(notifyMessage);
                     if (!sentNotifications[x.trackId]) {
                       notify([notifyMessage]);
@@ -135,9 +140,9 @@ async function postData(d) {
                     }
                   }
                 } else {
-                  // App mới lần đầu theo dõi → thông báo cả giá và version
-                  const notifyPriceMessage = `${x.trackName} · ${x.formattedPrice}`;
-                  const notifyVersionMessage = `${x.trackName} · ${x.version}`;
+                  // App mới hoàn toàn
+                  const notifyPriceMessage = `${x.trackName} → ${x.formattedPrice}`;
+                  const notifyVersionMessage = `${x.trackName} → ${x.version}`;
                   notifys.push(notifyPriceMessage);
                   notifys.push(notifyVersionMessage);
 
@@ -152,20 +157,19 @@ async function postData(d) {
             return Promise.resolve();
           })
           .catch((e) => {
-            $.error(`Fetch failed: ${e}`);
+            $.error(`Failed to fetch App Store data: ${e}`);
           });
       })
     );
 
-    // Ghi lại thông tin mới sau khi so sánh xong
+    // Ghi lại dữ liệu mới sau khi đã so sánh xong
     $.write(JSON.stringify(infos), "compare");
-    $.log("Success"); // Ghi log xác nhận đã lưu xong dữ liệu
+    $.log("Saved new comparison data");
 
-    // Kết thúc nếu có thông báo
+    // Nếu có thông báo thì kết thúc
     if (notifys.length > 0) {
       $.done();
     } else {
-      // Tính thời gian thực thi
       let endTime = new Date().getTime();
       let executionTime = endTime - startTime;
       let speedNotification = getSpeedNotification(executionTime);
@@ -176,6 +180,7 @@ async function postData(d) {
     $.error(`postData exception: ${e}`);
   }
 }
+
 
 // Tính tốc độ xử lý để log
 function getSpeedNotification(executionTime) {
