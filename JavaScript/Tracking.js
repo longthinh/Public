@@ -18,16 +18,7 @@ function flag(x) {
 }
 
 // List appId
-let appId = [
-  "775737172",
-  "1312014438",
-  "1442620678",
-  "1443988620",
-  "1462586500",
-  "1481781647",
-  "1527036273",
-  "1548193893",
-];
+let appId = ["775737172","1312014438","1442620678","1443988620","1462586500","1481781647","1527036273","1548193893"];
 
 // Override the appId if the user has previously saved a configuration
 if ($.read("appId") != "" && $.read("appId") != undefined) {
