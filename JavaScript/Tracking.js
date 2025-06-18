@@ -1,14 +1,9 @@
 /**
  * @longthinh
- * Script to monitor and notify App Store price changes.
- * Fixed incorrect price notification by comparing numeric price instead of string formattedPrice.
  */
 
-const $ = new API("Tracking", true); // Initialize the object
-
-let region = "VN"; // Default region
-
-// Flag country function
+const $ = new API("Tracking", true);
+let region = "VN";
 function flag(x) {
   var flags = new Map([
     ["US", ""], // ["US", "🇺🇸"],
@@ -17,26 +12,29 @@ function flag(x) {
   return flags.get(x.toUpperCase());
 }
 
-// List appId
-let appId = ["775737172","1312014438","1442620678","1443988620","1462586500","1481781647","1527036273","1548193893"];
+let appId = [
+  "775737172",
+  "1312014438",
+  "1442620678",
+  "1443988620",
+  "1462586500",
+  "1481781647",
+  "1527036273",
+  "1548193893",
+];
 
-// Override the appId if the user has previously saved a configuration
 if ($.read("appId") != "" && $.read("appId") != undefined) {
   appId = $.read("appId").split(",");
 }
-
-// Override the region if a configuration exists
 if ($.read("region") != "" && $.read("region") != undefined) {
   region = $.read("region");
 }
 
-getData(appId); // Start processing appId data
+getData(appId);
+let notifys = [];
+let sentNotifications = {};
+let startTime = new Date().getTime();
 
-let notifys = []; // Array containing the notifications to be sent
-let sentNotifications = {}; // Avoid sending duplicate apps
-let startTime = new Date().getTime(); // Time processing
-
-// Convert the appId data into region-based format to send the request
 function getData(x) {
   let matchData = {};
   x.forEach((n) => {
@@ -64,16 +62,13 @@ function getData(x) {
       notifys.push(`appId Invalid: ${n}`);
     }
   });
-
   if (Object.keys(matchData).length > 0) {
     postData(matchData);
   }
 }
 
-// Function processing data and comparing with previous data
 async function postData(d) {
   try {
-    // Reading previous data from cache
     let showData = $.read("compare");
     if (showData === "" || showData === undefined) {
       showData = {};
@@ -81,9 +76,7 @@ async function postData(d) {
       showData = JSON.parse(showData);
       $.info(showData);
     }
-
-    let infos = {}; // New data to save compare
-
+    let infos = {};
     await Promise.all(
       Object.keys(d).map(async (k) => {
         let config = {
@@ -93,68 +86,58 @@ async function postData(d) {
             "&country=" +
             k,
         };
-
         await $.http
           .get(config)
           .then((response) => {
             let results = JSON.parse(response.body).results;
-
             results.sort((a, b) => a.trackName.localeCompare(b.trackName));
-
             if (Array.isArray(results) && results.length > 0) {
               results.forEach((x) => {
-                // Saved info app currently
-                infos[x.trackId] = {
-                  n: x.trackName,
-                  v: x.version,
-                  p: x.formattedPrice,
-                  pr: x.price,
-                };
-
-                // If existing data, compare with previous
-                if (showData.hasOwnProperty(x.trackId)) {
-                  const prev = showData[x.trackId];
-
-                  // write log debug
-                  $.log(
-                    `${x.trackName}\noldPrice= ${prev.p}, oldVersion= ${prev.v}\nnewPrice= ${x.formattedPrice}, newVersion= ${x.version} ↵`
-                  );
-                  //console.log(""); // endl
-
-                  // Check price if changed
-                  if (x.price !== prev.pr) {
-                    const notifyMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
-                    notifys.push(notifyMessage);
+                const prev = showData[x.trackId];
+                const shouldUpdate =
+                  !prev || compareVersions(x.version, prev.v) >= 0;
+                if (shouldUpdate) {
+                  infos[x.trackId] = {
+                    n: x.trackName,
+                    v: x.version,
+                    p: x.formattedPrice,
+                    pr: x.price,
+                  };
+                  if (prev) {
+                    // $.log(
+                    //   `${x.trackName}\noldPrice= ${prev.p}, oldVersion= ${prev.v}\nnewPrice= ${x.formattedPrice}, newVersion= ${x.version} ↵`
+                    // );
+                    $.log(
+                      `[${x.trackId}] ${x.trackName}\noldPrice= ${prev.p}, oldVersion= ${prev.v}\nnewPrice= ${x.formattedPrice}, newVersion= ${x.version} ↵`
+                    );
+                    if (x.price !== prev.pr) {
+                      const notifyMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
+                      notifys.push(notifyMessage);
+                      if (!sentNotifications[x.trackId]) {
+                        notify([notifyMessage]);
+                        sentNotifications[x.trackId] = true;
+                      }
+                    }
+                    if (x.version !== prev.v) {
+                      const notifyMessage = `${x.trackName} ㅤ ${x.version}`;
+                      notifys.push(notifyMessage);
+                      if (!sentNotifications[x.trackId]) {
+                        notify([notifyMessage]);
+                        sentNotifications[x.trackId] = true;
+                      }
+                    }
+                  } else {
+                    const notifyPriceMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
+                    const notifyVersionMessage = `${x.trackName} ㅤ ${x.version}`;
+                    notifys.push(notifyPriceMessage, notifyVersionMessage);
                     if (!sentNotifications[x.trackId]) {
-                      notify([notifyMessage]);
+                      notify([notifyPriceMessage, notifyVersionMessage]);
                       sentNotifications[x.trackId] = true;
                     }
-                  }
-
-                  // Check version if changed
-                  if (x.version !== prev.v) {
-                    const notifyMessage = `${x.trackName} ㅤ ${x.version}`;
-                    notifys.push(notifyMessage);
-                    if (!sentNotifications[x.trackId]) {
-                      notify([notifyMessage]);
-                      sentNotifications[x.trackId] = true;
-                    }
-                  }
-                } else {
-                  // New app added - two notifications
-                  const notifyPriceMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
-                  const notifyVersionMessage = `${x.trackName} ㅤ ${x.version}`;
-                  notifys.push(notifyPriceMessage);
-                  notifys.push(notifyVersionMessage);
-
-                  if (!sentNotifications[x.trackId]) {
-                    notify([notifyPriceMessage, notifyVersionMessage]);
-                    sentNotifications[x.trackId] = true;
                   }
                 }
               });
             }
-
             return Promise.resolve();
           })
           .catch((e) => {
@@ -162,8 +145,6 @@ async function postData(d) {
           });
       })
     );
-
-    // Write new data to cache
     $.write(JSON.stringify(infos), "compare");
 
     let endTime = new Date().getTime();
@@ -181,14 +162,25 @@ async function postData(d) {
   }
 }
 
-// Notification function
+function compareVersions(v1, v2) {
+  const s1 = v1.split(".").map(Number);
+  const s2 = v2.split(".").map(Number);
+  const len = Math.max(s1.length, s2.length);
+  for (let i = 0; i < len; i++) {
+    const num1 = s1[i] || 0;
+    const num2 = s2[i] || 0;
+    if (num1 > num2) return 1;
+    if (num1 < num2) return -1;
+  }
+  return 0;
+}
+
 function notify(notifys) {
   notifys = notifys.join(`\n`);
   console.log(notifys);
   $.notify(`${flag(region)}App Store`, ``, notifys);
 }
 
-// ENV
 function ENV() {
   const isQX = typeof $task !== "undefined";
   const isSurge =
@@ -213,7 +205,7 @@ function HTTP(defaultOptions = { baseURL: "" }) {
     }
 
     options = { ...defaultOptions, ...options };
-
+    
     const timeout = options.timeout;
     const events = {
       onRequest: () => {},
@@ -253,7 +245,6 @@ function HTTP(defaultOptions = { baseURL: "" }) {
           }, timeout);
         })
       : null;
-
     return (timer ? Promise.race([timer, worker]) : worker).then(
       events.onResponse
     );
