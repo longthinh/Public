@@ -123,7 +123,7 @@ async function postData(d) {
 
                   // Check price if changed
                   if (x.price !== prev.pr) {
-                    const notifyMessage = `${x.trackName} → ${x.formattedPrice}`;
+                    const notifyMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
                     notifys.push(notifyMessage);
                     if (!sentNotifications[x.trackId]) {
                       notify([notifyMessage]);
@@ -133,7 +133,7 @@ async function postData(d) {
 
                   // Check version if changed
                   if (x.version !== prev.v) {
-                    const notifyMessage = `${x.trackName} → ${x.version}`;
+                    const notifyMessage = `${x.trackName} ㅤ ${x.version}`;
                     notifys.push(notifyMessage);
                     if (!sentNotifications[x.trackId]) {
                       notify([notifyMessage]);
@@ -142,8 +142,8 @@ async function postData(d) {
                   }
                 } else {
                   // New app added - two notifications
-                  const notifyPriceMessage = `${x.trackName} → ${x.formattedPrice}`;
-                  const notifyVersionMessage = `${x.trackName} → ${x.version}`;
+                  const notifyPriceMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
+                  const notifyVersionMessage = `${x.trackName} ㅤ ${x.version}`;
                   notifys.push(notifyPriceMessage);
                   notifys.push(notifyVersionMessage);
 
