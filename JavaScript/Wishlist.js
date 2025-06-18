@@ -96,7 +96,7 @@ async function postData(d) {
                   };
                   if (prev) {
                     $.log(
-                      `${x.trackName}\nappId= ${x.trackId}\noldPrice= ${prev.p}, oldVersion= ${prev.v}\nnewPrice= ${x.formattedPrice}, newVersion= ${x.version} ↵`
+                      `appId= ${x.trackId}\n${x.trackName}\noldPrice= ${prev.p}, newPrice= ${x.formattedPrice}\noldVersion= ${prev.v}, newVersion= ${x.version}`
                     );
                     console.log("----------------------------");
                     if (x.price !== prev.pr) {
