@@ -95,12 +95,10 @@ async function postData(d) {
                     pr: x.price,
                   };
                   if (prev) {
-                    // $.log(
-                    //   `${x.trackName}\noldPrice= ${prev.p}, oldVersion= ${prev.v}\nnewPrice= ${x.formattedPrice}, newVersion= ${x.version} ↵`
-                    // );
                     $.log(
-                      `[${x.trackId}] ${x.trackName}\noldPrice= ${prev.p}, oldVersion= ${prev.v}\nnewPrice= ${x.formattedPrice}, newVersion= ${x.version} ↵`
+                      `${x.trackName}\nappId= ${x.trackId}\noldPrice= ${prev.p}, oldVersion= ${prev.v}\nnewPrice= ${x.formattedPrice}, newVersion= ${x.version} ↵`
                     );
+                    console.log("----------------------------");
                     if (x.price !== prev.pr) {
                       const notifyMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
                       notifys.push(notifyMessage);
