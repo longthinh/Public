@@ -117,7 +117,7 @@ async function postData(d) {
 
                   // write log debug
                   $.log(
-                    `${x.trackName}\noldPrice= ${prev.p}\nnewPrice= ${x.formattedPrice} ↵`
+                    `${x.trackName}\noldPrice= ${prev.p}, oldVersion= ${prev.v}\nnewPrice= ${x.formattedPrice}, newVersion= ${x.version} ↵`
                   );
                   //console.log(""); // endl
 
