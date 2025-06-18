@@ -12,16 +12,7 @@ function flag(x) {
   return flags.get(x.toUpperCase());
 }
 
-let appId = [
-  "775737172",
-  "1312014438",
-  "1442620678",
-  "1443988620",
-  "1462586500",
-  "1481781647",
-  "1527036273",
-  "1548193893",
-];
+let appId = ["775737172","1312014438","1442620678","1443988620","1462586500","1481781647","1527036273","1548193893"];
 
 if ($.read("appId") != "" && $.read("appId") != undefined) {
   appId = $.read("appId").split(",");
@@ -205,7 +196,7 @@ function HTTP(defaultOptions = { baseURL: "" }) {
     }
 
     options = { ...defaultOptions, ...options };
-    
+
     const timeout = options.timeout;
     const events = {
       onRequest: () => {},
