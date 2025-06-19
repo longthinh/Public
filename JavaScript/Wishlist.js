@@ -2,8 +2,9 @@
  * @longthinh
  */
 
-const $ = new API("Tracking", true);
+const $ = new API("Wishlist", true);
 let region = "US";
+
 function flag(x) {
   var flags = new Map([
     ["US", ""], // ["US", "🇺🇸"],
@@ -67,6 +68,7 @@ async function postData(d) {
       showData = JSON.parse(showData);
       $.info(showData);
     }
+
     let infos = {};
     await Promise.all(
       Object.keys(d).map(async (k) => {
@@ -82,11 +84,13 @@ async function postData(d) {
           .then((response) => {
             let results = JSON.parse(response.body).results;
             results.sort((a, b) => a.trackName.localeCompare(b.trackName));
+
             if (Array.isArray(results) && results.length > 0) {
               results.forEach((x) => {
                 const prev = showData[x.trackId];
                 const shouldUpdate =
                   !prev || compareVersions(x.version, prev.v) >= 0;
+
                 if (shouldUpdate) {
                   infos[x.trackId] = {
                     n: x.trackName,
@@ -94,14 +98,14 @@ async function postData(d) {
                     p: x.formattedPrice,
                     pr: x.price,
                   };
+
+                  let logOutput = `appId= ${x.trackId}\n${x.trackName}\noldPrice= ${prev ? prev.p : "firstTime"}, newPrice= ${x.formattedPrice}\noldVersion= ${prev ? prev.v : "firstTime"}, newVersion= ${x.version}\n`;
+
                   if (prev) {
-                    $.log(
-                      `appId= ${x.trackId}\n${x.trackName}\noldPrice= ${prev.p}, newPrice= ${x.formattedPrice}\noldVersion= ${prev.v}, newVersion= ${x.version}`
-                    );
-                    console.log("----------------------------");
                     if (x.price !== prev.pr) {
                       const notifyMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
                       notifys.push(notifyMessage);
+                      logOutput += `notify= ${notifyMessage}\n`;
                       if (!sentNotifications[x.trackId]) {
                         notify([notifyMessage]);
                         sentNotifications[x.trackId] = true;
@@ -110,6 +114,7 @@ async function postData(d) {
                     if (x.version !== prev.v) {
                       const notifyMessage = `${x.trackName} ㅤ ${x.version}`;
                       notifys.push(notifyMessage);
+                      logOutput += `notify= ${notifyMessage}\n`;
                       if (!sentNotifications[x.trackId]) {
                         notify([notifyMessage]);
                         sentNotifications[x.trackId] = true;
@@ -119,14 +124,19 @@ async function postData(d) {
                     const notifyPriceMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
                     const notifyVersionMessage = `${x.trackName} ㅤ ${x.version}`;
                     notifys.push(notifyPriceMessage, notifyVersionMessage);
+                    logOutput += `notify= ${notifyPriceMessage}\nnotify= ${notifyVersionMessage}\n`;
                     if (!sentNotifications[x.trackId]) {
                       notify([notifyPriceMessage, notifyVersionMessage]);
                       sentNotifications[x.trackId] = true;
                     }
                   }
+
+                  logOutput += "----------------------------";
+                  $.log(logOutput);
                 }
               });
             }
+
             return Promise.resolve();
           })
           .catch((e) => {
@@ -134,18 +144,14 @@ async function postData(d) {
           });
       })
     );
+
     $.write(JSON.stringify(infos), "compare");
 
     let endTime = new Date().getTime();
     let executionTime = endTime - startTime;
-
     $.log(`Timeout ${executionTime}ms\n`);
 
-    if (notifys.length > 0) {
-      $.done();
-    } else {
-      $.done();
-    }
+    $.done();
   } catch (e) {
     $.error(`postData exception: ${e}`);
   }
@@ -166,8 +172,8 @@ function compareVersions(v1, v2) {
 
 function notify(notifys) {
   notifys = notifys.join(`\n`);
-  console.log(notifys);
   $.notify(`${flag(region)}App Store`, ``, notifys);
+  // Đã loại bỏ console.log(notifys) để tránh log nhảy dòng
 }
 
 function ENV() {
