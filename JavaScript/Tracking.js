@@ -99,7 +99,7 @@ async function postData(d) {
                     pr: x.price,
                   };
 
-                  let logOutput = `appId= ${x.trackId}\n${x.trackName}\noldPrice= ${prev ? prev.p : "firstTime"}, newPrice= ${x.formattedPrice}\noldVersion= ${prev ? prev.v : "firstTime"}, newVersion= ${x.version}\n`;
+                  let logOutput = `appId= ${x.trackId}\nappName= ${x.trackName}\noldPrice= ${prev ? prev.p : "firstTime"}, newPrice= ${x.formattedPrice}\noldVersion= ${prev ? prev.v : "firstTime"}, newVersion= ${x.version}\n`;
 
                   if (prev) {
                     if (x.price !== prev.pr) {
