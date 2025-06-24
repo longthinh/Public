@@ -1,9 +1,9 @@
-/**More actions
+/**
  * @longthinh
  * Last update
  */
 
-const $ = new API("AppStore", true);
+const $ = new API("Wishlist", true);
 
 let region = "US";
 
@@ -15,7 +15,7 @@ function flag(x) {
   return flags.get(x.toUpperCase());
 }
 
-let appId = ["6746919640","1660167141","6447283144","1512938504","896694807","775737172","1312014438","1442620678","1443988620","1462586500","1481781647","1527036273","1548193893"];
+let appId = ["1573144215"];
 
 if ($.read("appId") != "" && $.read("appId") != undefined) {
   appId = $.read("appId").split(",");
