@@ -418,31 +418,19 @@ function API(name = "untitled", debug = false) {
 
     read(key) {
       this.log(`READ ${key}`);
-
       if (key.indexOf("#") !== -1) {
         key = key.substr(1);
-
         if (isSurge || isLoon) {
           return $persistentStore.read(key);
         }
-
         if (isQX) {
           return $prefs.valueForKey(key);
         }
-
         if (isNode) {
           return this.root[key];
         }
-
-        if (isScriptable) {
-          return null;
-        }
       } else {
-        if (isScriptable) {
-          return null;
-        } else {
-          return this.cache[key];
-        }
+        return this.cache[key];
       }
     }
 
