@@ -173,8 +173,9 @@ function compareVersions(v1, v2) {
 function notify(notifys) {
   notifys = notifys.join(`\n`);
   $.notify(`${flag(region)}App Store`, ``, notifys);
-  // Đã loại bỏ console.log(notifys) để tránh log nhảy dòng
 }
+
+// ENV + HTTP + API BELOW
 
 function ENV() {
   const isQX = typeof $task !== "undefined";
@@ -195,11 +196,7 @@ function ENV() {
   };
 }
 
-function HTTP(
-  defaultOptions = {
-    baseURL: "",
-  }
-) {
+function HTTP(defaultOptions = { baseURL: "" }) {
   const { isQX, isLoon, isSurge, isScriptable, isNode } = ENV();
   const methods = ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"];
   const URL_REGEX =
@@ -208,36 +205,17 @@ function HTTP(
   function send(method, options) {
     options =
       typeof options === "string"
-        ? {
-            url: options,
-          }
+        ? { url: options }
         : options;
     const baseURL = defaultOptions.baseURL;
     if (baseURL && !URL_REGEX.test(options.url || "")) {
-      options.url = baseURL ? baseURL + options.url : options.url;
+      options.url = baseURL + options.url;
     }
-    options = {
-      ...defaultOptions,
-      ...options,
-    };
-    const timeout = options.timeout;
-    const events = {
-      ...{
-        onRequest: () => {},
-        onResponse: (resp) => resp,
-        onTimeout: () => {},
-      },
-      ...options.events,
-    };
-
-    events.onRequest(method, options);
+    options = { ...defaultOptions, ...options };
 
     let worker;
     if (isQX) {
-      worker = $task.fetch({
-        method,
-        ...options,
-      });
+      worker = $task.fetch({ method, ...options });
     } else if (isLoon || isSurge || isNode) {
       worker = new Promise((resolve, reject) => {
         const request = isNode ? require("request") : $httpClient;
@@ -256,53 +234,40 @@ function HTTP(
       request.method = method;
       request.headers = options.headers;
       request.body = options.body;
-      worker = new Promise((resolve, reject) => {
-        request
-          .loadString()
-          .then((body) => {
-            resolve({
-              statusCode: request.response.statusCode,
-              headers: request.response.headers,
-              body,
-            });
-          })
-          .catch((err) => reject(err));
-      });
+      worker = request.loadString().then((body) => ({
+        statusCode: request.response.statusCode,
+        headers: request.response.headers,
+        body,
+      }));
     }
 
-    let timeoutid;
-
-    const timer = timeout
-      ? new Promise((_, reject) => {
-          timeoutid = setTimeout(() => {
-            events.onTimeout();
-            return reject(
-              `${method} URL: ${options.url} exceeds the timeout ${timeout} ms`
-            );
-          }, timeout);
-        })
-      : null;
-
-    return (
-      timer
-        ? Promise.race([timer, worker]).then((res) => {
-            clearTimeout(timeoutid);
-            return res;
-          })
-        : worker
-    ).then((resp) => events.onResponse(resp));
+    return worker;
   }
 
   const http = {};
-  methods.forEach(
-    (method) =>
-      (http[method.toLowerCase()] = (options) => send(method, options))
-  );
+  methods.forEach((method) => {
+    http[method.toLowerCase()] = (options) => send(method, options);
+  });
   return http;
 }
 
 function API(name = "untitled", debug = false) {
   const { isQX, isLoon, isSurge, isNode, isJSBox, isScriptable } = ENV();
+
+  function readScriptableStore(key) {
+    if (Keychain.contains(key)) {
+      try {
+        return JSON.parse(Keychain.get(key));
+      } catch {
+        return {};
+      }
+    }
+    return {};
+  }
+
+  function writeScriptableStore(key, data) {
+    Keychain.set(key, JSON.stringify(data, null, 2));
+  }
 
   return new (class {
     constructor(name, debug) {
@@ -313,63 +278,26 @@ function API(name = "untitled", debug = false) {
       this.node = (() => {
         if (isNode) {
           const fs = require("fs");
-
-          return {
-            fs,
-          };
-        } else {
-          return null;
+          return { fs };
         }
+        return null;
       })();
       this.initCache();
-
-      const delay = (t, v) =>
-        new Promise(function (resolve) {
-          setTimeout(resolve.bind(null, v), t);
-        });
-
-      Promise.prototype.delay = function (t) {
-        return this.then(function (v) {
-          return delay(t, v);
-        });
-      };
     }
 
     initCache() {
       if (isQX) this.cache = JSON.parse($prefs.valueForKey(this.name) || "{}");
       if (isLoon || isSurge)
         this.cache = JSON.parse($persistentStore.read(this.name) || "{}");
-
       if (isNode) {
-        let fpath = "root.json";
+        let fpath = `${this.name}.json`;
         if (!this.node.fs.existsSync(fpath)) {
-          this.node.fs.writeFileSync(
-            fpath,
-            JSON.stringify({}),
-            {
-              flag: "wx",
-            },
-            (err) => console.log(err)
-          );
+          this.node.fs.writeFileSync(fpath, JSON.stringify({}), { flag: "wx" });
         }
-        this.root = {};
-
-        fpath = `${this.name}.json`;
-        if (!this.node.fs.existsSync(fpath)) {
-          this.node.fs.writeFileSync(
-            fpath,
-            JSON.stringify({}),
-            {
-              flag: "wx",
-            },
-            (err) => console.log(err)
-          );
-          this.cache = {};
-        } else {
-          this.cache = JSON.parse(
-            this.node.fs.readFileSync(`${this.name}.json`)
-          );
-        }
+        this.cache = JSON.parse(this.node.fs.readFileSync(fpath));
+      }
+      if (isScriptable) {
+        this.cache = readScriptableStore(this.name);
       }
     }
 
@@ -377,125 +305,35 @@ function API(name = "untitled", debug = false) {
       const data = JSON.stringify(this.cache, null, 2);
       if (isQX) $prefs.setValueForKey(data, this.name);
       if (isLoon || isSurge) $persistentStore.write(data, this.name);
-      if (isNode) {
-        this.node.fs.writeFileSync(
-          `${this.name}.json`,
-          data,
-          {
-            flag: "w",
-          },
-          (err) => console.log(err)
-        );
-        this.node.fs.writeFileSync(
-          "root.json",
-          JSON.stringify(this.root, null, 2),
-          {
-            flag: "w",
-          },
-          (err) => console.log(err)
-        );
-      }
+      if (isNode) this.node.fs.writeFileSync(`${this.name}.json`, data, { flag: "w" });
+      if (isScriptable) writeScriptableStore(this.name, this.cache);
     }
 
     write(data, key) {
       this.log(`SET ${key}`);
-      if (key.indexOf("#") !== -1) {
-        key = key.substr(1);
-        if (isSurge || isLoon) {
-          return $persistentStore.write(data, key);
-        }
-        if (isQX) {
-          return $prefs.setValueForKey(data, key);
-        }
-        if (isNode) {
-          this.root[key] = data;
-        }
-      } else {
-        this.cache[key] = data;
-      }
+      this.cache[key] = data;
       this.persistCache();
     }
 
     read(key) {
       this.log(`READ ${key}`);
-      if (key.indexOf("#") !== -1) {
-        key = key.substr(1);
-        if (isSurge || isLoon) {
-          return $persistentStore.read(key);
-        }
-        if (isQX) {
-          return $prefs.valueForKey(key);
-        }
-        if (isNode) {
-          return this.root[key];
-        }
-      } else {
-        return this.cache[key];
-      }
+      return this.cache[key];
     }
 
     delete(key) {
       this.log(`DELETE ${key}`);
-      if (key.indexOf("#") !== -1) {
-        key = key.substr(1);
-        if (isSurge || isLoon) {
-          return $persistentStore.write(null, key);
-        }
-        if (isQX) {
-          return $prefs.removeValueForKey(key);
-        }
-        if (isNode) {
-          delete this.root[key];
-        }
-      } else {
-        delete this.cache[key];
-      }
+      delete this.cache[key];
       this.persistCache();
     }
 
     notify(title, subtitle = "", content = "", options = {}) {
-      const openURL = options["open-url"];
-      const mediaURL = options["media-url"];
-
       if (isQX) $notify(title, subtitle, content, options);
-
-      if (isSurge) {
-        $notification.post(
-          title,
-          subtitle,
-          content + `${mediaURL ? "\nmultimedia:" + mediaURL : ""}`,
-          {
-            url: openURL,
-          }
-        );
-      }
-
-      if (isLoon) {
-        let opts = {};
-        if (openURL) opts["openUrl"] = openURL;
-        if (mediaURL) opts["mediaUrl"] = mediaURL;
-        if (JSON.stringify(opts) === "{}") {
-          $notification.post(title, subtitle, content);
-        } else {
-          $notification.post(title, subtitle, content, opts);
-        }
-      }
-
-      if (isNode || isScriptable) {
-        const content_ =
-          content +
-          (openURL ? `\nClick: ${openURL}` : "") +
-          (mediaURL ? `\nMultimedia: ${mediaURL}` : "");
-        if (isJSBox) {
-          const push = require("push");
-          push.schedule({
-            title: title,
-            body: (subtitle ? subtitle + "\n" : "") + content_,
-          });
-        } else {
-          console.log(`${title}\n${subtitle}\n${content_}\n\n`);
-        }
-      }
+      if (isSurge || isLoon)
+        $notification.post(title, subtitle, content, {
+          url: options["open-url"],
+        });
+      if (isNode || isScriptable)
+        console.log(`${title}\n${subtitle}\n${content}`);
     }
 
     log(msg) {
@@ -510,31 +348,13 @@ function API(name = "untitled", debug = false) {
       console.log(`[${this.name}] ERROR: ${this.stringify(msg)}`);
     }
 
-    wait(millisec) {
-      return new Promise((resolve) => setTimeout(resolve, millisec));
-    }
-
     done(value = {}) {
-      if (isQX || isLoon || isSurge) {
-        $done(value);
-      } else if (isNode && !isJSBox) {
-        if (typeof $context !== "undefined") {
-          $context.headers = value.headers;
-          $context.statusCode = value.statusCode;
-          $context.body = value.body;
-        }
-      }
+      if (isQX || isLoon || isSurge) $done(value);
     }
 
     stringify(obj_or_str) {
-      if (typeof obj_or_str === "string" || obj_or_str instanceof String)
-        return obj_or_str;
-      else
-        try {
-          return JSON.stringify(obj_or_str, null, 2);
-        } catch (err) {
-          return "[object Object]";
-        }
+      if (typeof obj_or_str === "string") return obj_or_str;
+      return JSON.stringify(obj_or_str, null, 2);
     }
   })(name, debug);
 }
