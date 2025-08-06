@@ -14,7 +14,7 @@
                 <key>PayloadUUID</key>
                 <string>4D134ADC-68BB-4B54-8A93-F7771EB1F8A9</string>
                 <key>PayloadDisplayName</key>
-                <string>myLock</string>
+                <string>iLock</string>
                 <key>FullScreen</key>
                 <true/>
                 <key>IgnoreManifestScope</key>
@@ -36,7 +36,7 @@
         <key>PayloadType</key>
         <string>Configuration</string>
         <key>PayloadDisplayName</key>
-        <string>myLock</string>
+        <string>iLock</string>
         <key>PayloadDescription</key>
         <string>This profile provides a method to rename app or icon, without affecting the original app. After installing the file, a shortcut will be added to the desktop.</string>
     </dict>
