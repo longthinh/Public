@@ -5,6 +5,9 @@
 const $ = new API("Tracking", true);
 let region = "US";
 
+const appIdURL =
+  "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/JSON/appIds.json";
+
 function flag(x) {
   var flags = new Map([
     ["US", ""], // ["US", "🇺🇸"],
@@ -13,19 +16,30 @@ function flag(x) {
   return flags.get(x.toUpperCase());
 }
 
-let appId = ["6741758667","1619480823","1405459188","1247273887","6742043284","1660167141","6447283144","1512938504","896694807","1312014438","1442620678","1443988620","1462586500","1481781647","1527036273","1548193893"];
-
-if ($.read("appId") != "" && $.read("appId") != undefined) {
-  appId = $.read("appId").split(",");
-}
-if ($.read("region") != "" && $.read("region") != undefined) {
-  region = $.read("region");
-}
-
-getData(appId);
 let notifys = [];
 let sentNotifications = {};
 let startTime = new Date().getTime();
+
+(async () => {
+  try {
+    let appId = await getAppIdsFromGitHub();
+    $.log("App IDs loaded: " + appId.join(", "));
+
+    if ($.read("region") != "" && $.read("region") != undefined) {
+      region = $.read("region");
+    }
+
+    getData(appId);
+  } catch (e) {
+    $.error("Failed to load appIds: " + e);
+    $.done();
+  }
+})();
+
+async function getAppIdsFromGitHub() {
+  let response = await $.http.get(appIdURL);
+  return JSON.parse(response.body);
+}
 
 function getData(x) {
   let matchData = {};
@@ -99,7 +113,13 @@ async function postData(d) {
                     pr: x.price,
                   };
 
-                  let logOutput = `appId= ${x.trackId}\nappName= ${x.trackName}\noldPrice= ${prev ? prev.p : "firstTime"}, newPrice= ${x.formattedPrice}\noldVersion= ${prev ? prev.v : "firstTime"}, newVersion= ${x.version}\n`;
+                  let logOutput = `appId= ${x.trackId}\nappName= ${
+                    x.trackName
+                  }\noldVersion= ${prev ? prev.v : "firstTime"}, newVersion= ${
+                    x.version
+                  }\noldPrice= ${prev ? prev.p : "firstTime"}, newPrice= ${
+                    x.formattedPrice
+                  }\n`;
 
                   if (prev) {
                     if (x.price !== prev.pr) {
@@ -151,6 +171,14 @@ async function postData(d) {
     let executionTime = endTime - startTime;
     $.log(`Timeout ${executionTime}ms\n`);
 
+    if (ENV().isScriptable) {
+      if (notifys.length > 0) {
+        scriptableNotify(`${flag(region)}App Store`, notifys.join("\n"));
+      } else {
+        scriptableNotify(`${flag(region)}App Store`, "No change detected");
+      }
+    }
+
     $.done();
   } catch (e) {
     $.error(`postData exception: ${e}`);
@@ -173,6 +201,15 @@ function compareVersions(v1, v2) {
 function notify(notifys) {
   notifys = notifys.join(`\n`);
   $.notify(`${flag(region)}App Store`, ``, notifys);
+}
+
+function scriptableNotify(title, body) {
+  if (ENV().isScriptable) {
+    let notification = new Notification();
+    notification.title = title;
+    notification.body = body;
+    notification.schedule();
+  }
 }
 
 // ENV + HTTP + API BELOW
@@ -203,10 +240,7 @@ function HTTP(defaultOptions = { baseURL: "" }) {
     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
 
   function send(method, options) {
-    options =
-      typeof options === "string"
-        ? { url: options }
-        : options;
+    options = typeof options === "string" ? { url: options } : options;
     const baseURL = defaultOptions.baseURL;
     if (baseURL && !URL_REGEX.test(options.url || "")) {
       options.url = baseURL + options.url;
@@ -305,7 +339,8 @@ function API(name = "untitled", debug = false) {
       const data = JSON.stringify(this.cache, null, 2);
       if (isQX) $prefs.setValueForKey(data, this.name);
       if (isLoon || isSurge) $persistentStore.write(data, this.name);
-      if (isNode) this.node.fs.writeFileSync(`${this.name}.json`, data, { flag: "w" });
+      if (isNode)
+        this.node.fs.writeFileSync(`${this.name}.json`, data, { flag: "w" });
       if (isScriptable) writeScriptableStore(this.name, this.cache);
     }
 
@@ -358,3 +393,5 @@ function API(name = "untitled", debug = false) {
     }
   })(name, debug);
 }
+
+//Script.complete();
