@@ -5,9 +5,6 @@
 const $ = new API("Tracking", true);
 let region = "US";
 
-const appIdURL =
-  "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/JSON/appIds.json";
-
 function flag(x) {
   var flags = new Map([
     ["US", ""], // ["US", "🇺🇸"],
@@ -16,30 +13,19 @@ function flag(x) {
   return flags.get(x.toUpperCase());
 }
 
+let appId = ["6741758667","1619480823","1405459188","1247273887","6742043284","1660167141","6447283144","1512938504","896694807","1312014438","1442620678","1443988620","1462586500","1481781647","1527036273","1548193893"];
+
+if ($.read("appId") != "" && $.read("appId") != undefined) {
+  appId = $.read("appId").split(",");
+}
+if ($.read("region") != "" && $.read("region") != undefined) {
+  region = $.read("region");
+}
+
+getData(appId);
 let notifys = [];
 let sentNotifications = {};
 let startTime = new Date().getTime();
-
-(async () => {
-  try {
-    let appId = await getAppIdsFromGitHub();
-    $.log("App IDs loaded: " + appId.join(", "));
-
-    if ($.read("region") != "" && $.read("region") != undefined) {
-      region = $.read("region");
-    }
-
-    getData(appId);
-  } catch (e) {
-    $.error("Failed to load appIds: " + e);
-    $.done();
-  }
-})();
-
-async function getAppIdsFromGitHub() {
-  let response = await $.http.get(appIdURL);
-  return JSON.parse(response.body);
-}
 
 function getData(x) {
   let matchData = {};
