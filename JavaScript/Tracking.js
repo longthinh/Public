@@ -35,7 +35,7 @@ function getData(x) {
       let n_n = n.split(":");
       if (n_n.length === 1) {
         if (matchData.hasOwnProperty(region)) {
-          matchData[region].push(n_n[0]);
+          matchData[region].push(n_n);
         } else {
           matchData[region] = [];
           matchData[region].push(n_n[0]);
@@ -72,7 +72,7 @@ async function postData(d) {
     let infos = {};
     await Promise.all(
       Object.keys(d).map(async (k) => {
-        let configReq = {
+        let config = {
           url:
             "https://itunes.apple.com/lookup?id=" +
             d[k].join(",") +
@@ -80,9 +80,9 @@ async function postData(d) {
             k,
         };
         await $.http
-          .get(configReq)
+          .get(config)
           .then((response) => {
-            let results = JSON.parse(response.body).results || [];
+            let results = JSON.parse(response.body).results;
             results.sort((a, b) => a.trackName.localeCompare(b.trackName));
 
             if (Array.isArray(results) && results.length > 0) {
@@ -99,13 +99,7 @@ async function postData(d) {
                     pr: x.price,
                   };
 
-                  let logOutput = `appId= ${x.trackId}\nappName= ${
-                    x.trackName
-                  }\noldVersion= ${prev ? prev.v : "firstTime"}, newVersion= ${
-                    x.version
-                  }\noldPrice= ${prev ? prev.p : "firstTime"}, newPrice= ${
-                    x.formattedPrice
-                  }\n`;
+                  let logOutput = `appId= ${x.trackId}\n· appName= ${x.trackName}\n· oldVersion= ${prev ? prev.v : "firstTime"} - newVersion= ${x.version}\n· oldPrice= ${prev ? prev.p : "firstTime"} - newPrice= ${x.formattedPrice}\n`;
 
                   if (prev) {
                     if (x.price !== prev.pr) {
@@ -151,53 +145,21 @@ async function postData(d) {
       })
     );
 
-    showData = { ...showData, ...infos };
-
-    let widgetMessage = "";
-    if (notifys.length > 0) {
-      widgetMessage = notifys.join("\n");
-      scriptableNotify(`${flag(region)}App Store`, widgetMessage);
-      showData.lastWidgetMessage = widgetMessage;
-    } else {
-      widgetMessage = showData.lastWidgetMessage || "No change detected";
-      if (ENV().isScriptable) {
-        scriptableNotify(`${flag(region)}App Store`, "No change detected");
-      }
-    }
-
-    $.write(JSON.stringify(showData), "compare");
+    $.write(JSON.stringify(infos), "compare");
 
     let endTime = new Date().getTime();
     let executionTime = endTime - startTime;
     $.log(`Timeout ${executionTime}ms\n`);
 
-    if (ENV().isScriptable) {
-      if (config.runsInWidget) {
-        let widget = await createWidget(widgetMessage || "No change detected");
-        Script.setWidget(widget);
-      } else if (config.runsInApp) {
-        QuickLook.present(widgetMessage || "No change detected");
-      }
-      Script.complete();
-    }
-
     $.done();
   } catch (e) {
     $.error(`postData exception: ${e}`);
-    if (ENV().isScriptable) {
-      try {
-        let widget = await createWidget("Error: " + e);
-        Script.setWidget(widget);
-      } catch (_) {}
-      Script.complete();
-    }
-    $.done();
   }
 }
 
 function compareVersions(v1, v2) {
-  const s1 = (v1 || "0").split(".").map(Number);
-  const s2 = (v2 || "0").split(".").map(Number);
+  const s1 = v1.split(".").map(Number);
+  const s2 = v2.split(".").map(Number);
   const len = Math.max(s1.length, s2.length);
   for (let i = 0; i < len; i++) {
     const num1 = s1[i] || 0;
@@ -213,49 +175,8 @@ function notify(notifys) {
   $.notify(`${flag(region)}App Store`, ``, notifys);
 }
 
-function scriptableNotify(title, body) {
-  if (ENV().isScriptable) {
-    let notification = new Notification();
-    notification.title = title;
-    notification.body = body;
-    notification.schedule();
-  }
-}
+// ENV + HTTP + API BELOW
 
-async function createWidget(message) {
-  let family = config.widgetFamily || "large";
-  let w = new ListWidget();
-  w.backgroundColor = new Color("#1c1c1e");
-
-  let title = w.addText("App Store");
-  title.textColor = Color.white();
-  title.font = Font.boldSystemFont(14);
-  w.addSpacer(6);
-
-  const msg = (message || "").toString();
-
-  if (family === "small") {
-    let body = w.addText(msg);
-    body.textColor = Color.white();
-    body.font = Font.systemFont(11);
-    body.lineLimit = 3;
-  } else if (family === "medium") {
-    let body = w.addText(msg);
-    body.textColor = Color.white();
-    body.font = Font.systemFont(12);
-    body.lineLimit = 8;
-  } else {
-    let body = w.addText(msg);
-    body.textColor = Color.white();
-    body.font = Font.systemFont(12);
-    body.lineLimit = 0;
-  }
-
-  w.refreshAfterDate = new Date(Date.now() + 30 * 60 * 1000);
-  return w;
-}
-
-// ================ ENV + HTTP + API ================
 function ENV() {
   const isQX = typeof $task !== "undefined";
   const isLoon = typeof $loon !== "undefined";
@@ -282,7 +203,10 @@ function HTTP(defaultOptions = { baseURL: "" }) {
     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
 
   function send(method, options) {
-    options = typeof options === "string" ? { url: options } : options;
+    options =
+      typeof options === "string"
+        ? { url: options }
+        : options;
     const baseURL = defaultOptions.baseURL;
     if (baseURL && !URL_REGEX.test(options.url || "")) {
       options.url = baseURL + options.url;
@@ -381,8 +305,7 @@ function API(name = "untitled", debug = false) {
       const data = JSON.stringify(this.cache, null, 2);
       if (isQX) $prefs.setValueForKey(data, this.name);
       if (isLoon || isSurge) $persistentStore.write(data, this.name);
-      if (isNode)
-        this.node.fs.writeFileSync(`${this.name}.json`, data, { flag: "w" });
+      if (isNode) this.node.fs.writeFileSync(`${this.name}.json`, data, { flag: "w" });
       if (isScriptable) writeScriptableStore(this.name, this.cache);
     }
 
