@@ -19,7 +19,7 @@
 						<key>needs-shine</key>
 						<true/>
 						<key>url</key>
-						<string>https://raw.githubusercontent.com/longthinh/Public/master/Mask/Payload.png</string>
+						<string>https://raw.githubusercontent.com/longthinh/Public/master/JSBox/Payload.png</string>
 					</dict>
 					<dict>
 						<key>kind</key>
@@ -27,7 +27,7 @@
 						<key>needs-shine</key>
 						<true/>
 						<key>url</key>
-						<string>https://raw.githubusercontent.com/longthinh/Public/master/Mask/Payload.png</string>
+						<string>https://raw.githubusercontent.com/longthinh/Public/master/JSBox/Payload.png</string>
 					</dict>
 				</array>
 				<key>metadata</key>
