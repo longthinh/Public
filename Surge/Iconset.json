@@ -1,7 +1,13 @@
 {
   "name": "Icon Set Name",
   "icons": [
-    { "name": "icon1", "url": "https://example.com/icon1.png" },
-    { "name": "icon2", "url": "https://example.com/icon2.png" }
+    {
+      "name": "icon1",
+      "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/a0c8ca55b460489cfad9.png"
+    },
+    {
+      "name": "icon2",
+      "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/c4b50551c8fae9a079b8.png"
+    }
   ]
 }
