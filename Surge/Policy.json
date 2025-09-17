@@ -1,0 +1,7 @@
+{
+  "name": "Icon Set Name",
+  "icons": [
+    { "name": "icon1", "url": "https://example.com/icon1.png" },
+    { "name": "icon2", "url": "https://example.com/icon2.png" }
+  ]
+}
