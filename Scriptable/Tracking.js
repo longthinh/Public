@@ -99,24 +99,27 @@ async function postData(d) {
                     pr: x.price,
                   };
 
-                  let logOutput = `appId= ${x.trackId}\n· appName= ${x.trackName}\n· oldVersion= ${prev ? prev.v : "firstTime"} - newVersion= ${x.version}\n· oldPrice= ${prev ? prev.p : "firstTime"} - newPrice= ${x.formattedPrice}\n`;
+                  // let logOutput = `appId= ${x.trackId}\n· appName= ${x.trackName}\n· oldVersion= ${prev ? prev.v : "firstTime"} - newVersion= ${x.version}\n· oldPrice= ${prev ? prev.p : "firstTime"} - newPrice= ${x.formattedPrice}\n`;
+                  let logOutput = `${x.trackId}\n· ${x.trackName}\n· Price: ${
+                    prev ? prev.p : "null"
+                  }\n· Version: ${prev ? prev.v : "null"}\n`;
 
                   if (prev) {
                     if (x.price !== prev.pr) {
                       const notifyMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
                       notifys.push(notifyMessage);
-                      logOutput += `notify= ${notifyMessage}\n`;
+                      logOutput += `\n· ${notifyMessage} (NEW)\n`;
                       if (!sentNotifications[x.trackId]) {
-                        notify([notifyMessage]);
+                        notify([notifyMessage]); // [notifyMessage]
                         sentNotifications[x.trackId] = true;
                       }
                     }
                     if (x.version !== prev.v) {
                       const notifyMessage = `${x.trackName} ㅤ ${x.version}`;
                       notifys.push(notifyMessage);
-                      logOutput += `notify= ${notifyMessage}\n`;
+                      logOutput += `\n· ${notifyMessage} (NEW)\n`;
                       if (!sentNotifications[x.trackId]) {
-                        notify([notifyMessage]);
+                        notify([notifyMessage]); // [notifyMessage]
                         sentNotifications[x.trackId] = true;
                       }
                     }
@@ -124,9 +127,9 @@ async function postData(d) {
                     const notifyPriceMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
                     const notifyVersionMessage = `${x.trackName} ㅤ ${x.version}`;
                     notifys.push(notifyPriceMessage, notifyVersionMessage);
-                    logOutput += `notify= ${notifyPriceMessage}\nnotify= ${notifyVersionMessage}\n`;
+                    logOutput += `· ${notifyPriceMessage}\n· ${notifyVersionMessage}\n`;
                     if (!sentNotifications[x.trackId]) {
-                      notify([notifyPriceMessage, notifyVersionMessage]);
+                      notify([notifyPriceMessage, notifyVersionMessage]); // [notifyMessage]
                       sentNotifications[x.trackId] = true;
                     }
                   }
@@ -203,10 +206,7 @@ function HTTP(defaultOptions = { baseURL: "" }) {
     /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
 
   function send(method, options) {
-    options =
-      typeof options === "string"
-        ? { url: options }
-        : options;
+    options = typeof options === "string" ? { url: options } : options;
     const baseURL = defaultOptions.baseURL;
     if (baseURL && !URL_REGEX.test(options.url || "")) {
       options.url = baseURL + options.url;
@@ -305,7 +305,8 @@ function API(name = "untitled", debug = false) {
       const data = JSON.stringify(this.cache, null, 2);
       if (isQX) $prefs.setValueForKey(data, this.name);
       if (isLoon || isSurge) $persistentStore.write(data, this.name);
-      if (isNode) this.node.fs.writeFileSync(`${this.name}.json`, data, { flag: "w" });
+      if (isNode)
+        this.node.fs.writeFileSync(`${this.name}.json`, data, { flag: "w" });
       if (isScriptable) writeScriptableStore(this.name, this.cache);
     }
 
