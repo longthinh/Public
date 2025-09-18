@@ -108,7 +108,7 @@ async function postData(d) {
                     if (x.price !== prev.pr) {
                       const notifyMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
                       notifys.push(notifyMessage);
-                      logOutput += `\n· ${notifyMessage} (NEW)\n`;
+                      logOutput += `· ${notifyMessage} (NEW)\n`;
                       if (!sentNotifications[x.trackId]) {
                         notify([notifyMessage]); // [notifyMessage]
                         sentNotifications[x.trackId] = true;
@@ -117,7 +117,7 @@ async function postData(d) {
                     if (x.version !== prev.v) {
                       const notifyMessage = `${x.trackName} ㅤ ${x.version}`;
                       notifys.push(notifyMessage);
-                      logOutput += `\n· ${notifyMessage} (NEW)\n`;
+                      logOutput += `· ${notifyMessage} (NEW)\n`;
                       if (!sentNotifications[x.trackId]) {
                         notify([notifyMessage]); // [notifyMessage]
                         sentNotifications[x.trackId] = true;
