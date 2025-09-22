@@ -1,0 +1,30 @@
+{
+    "name": "Icon Set Name",
+    "icons": [
+      {
+        "name": "icon1",
+        "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/Surge/adblock.png"
+      },
+      {
+        "name": "icon1",
+        "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/Surge/appstore.png"
+      },
+      {
+        "name": "icon2",
+        "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/Surge/firmware.png"
+      },
+      {
+        "name": "icon3",
+        "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/Surge/network.png"
+      },
+      {
+        "name": "icon4",
+        "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/Surge/proxy.png"
+      },
+      {
+        "name": "icon5",
+        "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/Surge/software.png"
+      }
+    ]
+  }
+  

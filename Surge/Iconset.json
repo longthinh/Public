@@ -3,11 +3,23 @@
   "icons": [
     {
       "name": "icon1",
-      "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/a0c8ca55b460489cfad9.png"
+      "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/Surge/adblock.png"
     },
     {
       "name": "icon2",
-      "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/c4b50551c8fae9a079b8.png"
+      "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/Surge/firmware.png"
+    },
+    {
+      "name": "icon3",
+      "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/Surge/network.png"
+    },
+    {
+      "name": "icon4",
+      "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/Surge/proxy.png"
+    },
+    {
+      "name": "icon5",
+      "url": "https://raw.githubusercontent.com/longthinh/Public/master/Emoji/Surge/software.png"
     }
   ]
 }
