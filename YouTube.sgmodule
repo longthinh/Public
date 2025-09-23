@@ -1,0 +1,21 @@
+#!name=YouTube Premium
+#!desc=sgmodule
+#!system=ios
+#!arguments=Upload button:true,Clip button:true,Shorts button:false,Subtitle translation:off,Lyrics translation:off,Debug mode:false
+#!arguments-desc=Method:\nBlock parameters: [true, false]\nTranslation parameters: [Language code, off]\n\nNotes:\nLanguage code with Google Translate\nEnable debug mode to output more logs
+
+[Rule]
+AND,((DOMAIN-SUFFIX,googlevideo.com), (PROTOCOL,UDP)),REJECT
+AND,((DOMAIN,youtubei.googleapis.com), (PROTOCOL,UDP)),REJECT
+
+#[Rewrite]
+#ctier=(?!A) ctier=A 302
+
+[Script]
+YouTube = type=http-response,pattern=^https:\/\/youtubei\.googleapis\.com\/(youtubei\/v1\/(browse|next|player|search|reel\/reel_watch_sequence|guide|account\/get_setting|get_watch))(\?(.*))?$,requires-body=1,max-size=-1,binary-body-mode=1,script-path=Scripts/YouTube.js,argument="{"lyricLang":"{{{Lyrics translation}}}","captionLang":"{{{Subtitle translation}}}","blockUpload":{{{Upload button}}},"blockImmersive":{{{Clip button}}},"blockShorts":{{{Shorts button}}},"debug":{{{Debug mode}}}}"
+
+[Map Local]
+^https?:\/\/[\w-]+\.googlevideo\.com\/initplayback.+&oad data-type=text data="" status-code=200
+
+[MITM]
+hostname = %APPEND% *.googlevideo.com, youtubei.googleapis.com
