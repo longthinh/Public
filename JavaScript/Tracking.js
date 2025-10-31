@@ -108,7 +108,7 @@ async function postData(d) {
                     if (x.price !== prev.pr) {
                       const notifyMessage = `${x.trackName} ㅤ ${x.formattedPrice}`;
                       notifys.push(notifyMessage);
-                      logOutput += `· ${notifyMessage} (NEW)\n`;
+                      logOutput += `● ${notifyMessage} (NEW)\n`;
                       if (!sentNotifications[x.trackId]) {
                         notify([notifyMessage]); // [notifyMessage]
                         sentNotifications[x.trackId] = true;
