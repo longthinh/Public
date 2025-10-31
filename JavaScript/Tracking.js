@@ -117,7 +117,7 @@ async function postData(d) {
                     if (x.version !== prev.v) {
                       const notifyMessage = `${x.trackName} ㅤ ${x.version}`;
                       notifys.push(notifyMessage);
-                      logOutput += `· ${notifyMessage} (NEW)\n`;
+                      logOutput += `● ${notifyMessage} (NEW)\n`;
                       if (!sentNotifications[x.trackId]) {
                         notify([notifyMessage]); // [notifyMessage]
                         sentNotifications[x.trackId] = true;
