@@ -896,18 +896,18 @@ const main = async () => {
         name: "taskProcessor",
         fn: new TaskProcessor(),
       }),
-      "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/JavaScript/TaskProcessor.js"
+      "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Scripting/TaskProcessor.js"
     );
 
     await $.imports(
       ["* as plist", "https://esm.sh/plist"],
       [
         "express",
-        "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/JavaScript/SimpleExpressBeta.js",
+        "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Scripting/SimpleExpressBeta.js",
       ],
       [
         ({ name, fn }) => ({ name: name.slice(1), fn }),
-        "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/JavaScript/utils.js",
+        "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Scripting/utils.js",
       ]
     );
 
