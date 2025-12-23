@@ -821,15 +821,15 @@ const main = async () => {
       //["* as plist", "https://esm.sh/plist"],
       [
         "* as plist",
-        "https://github.com/longthinh/Public/raw/refs/heads/main/Scripting/PlistComplete.js",
+        "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Scripting/Plist.js",
       ],
       [
         "express",
-        "https://github.com/longthinh/Public/raw/refs/heads/main/Scripting/SimpleExpressBeta.js",
+        "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Scripting/Simple.js",
       ],
       [
         ({ name, fn }) => ({ name: name.slice(1), fn }),
-        "https://github.com/longthinh/Public/raw/refs/heads/main/Scripting/utils.js",
+        "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Scripting/Untils.js",
       ]
     );
 
