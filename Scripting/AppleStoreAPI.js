@@ -1,4 +1,4 @@
-// Module Import Utility Class
+// 模块导入工具类
 class $ {
   static async imports(...input) {
     return await Promise.all(input.map((i) => this.import(...i)));
@@ -13,9 +13,9 @@ class $ {
       const exp = "default" in module ? module.default : module;
       const expName = typeof exp.name === "string" ? exp.name : "default";
       this.#mountFunction(rule, exp, expName);
-      console.log(`${url} Load successful`);
+      console.log(`✅ ${url} 加载成功`);
     } catch (error) {
-      console.log(`Module loading failed: ${url}`, error);
+      console.log(`❌ 模块加载失败: ${url}`, error);
       throw error;
     }
   }
@@ -51,7 +51,7 @@ class $ {
     }
   }
 }
-// LRU Cache Class
+// LRU缓存类
 class LRUCache {
   #cache;
   constructor(capacity, cache) {
@@ -82,17 +82,17 @@ class LRUCache {
   }
 
   toArray() {
-    return this.#cache.entries().toArray();
+    return [...this.#cache.entries()];
   }
 }
-// Custom error class
+// 自定义错误类
 class CustomError extends Error {
   constructor(...args) {
     super(args.pop());
     if (args[0]) this.name = args[0] + "Error";
   }
 }
-// Generate virtual GUID | Cache MAC address
+// 生成虚拟GUID·缓存Mac地址
 const getMAc = (key) => {
   const generateHexPair = () =>
     Math.floor(Math.random() * 256)
@@ -111,7 +111,7 @@ const getMAc = (key) => {
 
   return uniqueId;
 };
-// Calculate capacity
+// 计算容量
 const formatSize = (size, unit = "B") => {
   const units = ["B", "KB", "MB", "GB", "TB", "PB"];
   const currentIndex = Math.max(0, units.indexOf(unit.toUpperCase()));
@@ -129,7 +129,11 @@ const formatSize = (size, unit = "B") => {
       : Math.round(bytes).toString();
   return `${formattedSize} ${units[unitIndex]}`;
 };
-// Shared State | Global Configuration
+
+//今天的日期
+const today = new Date().toISOString().split("T")[0];
+
+// 共享状态·全局配置
 const sharedState = {
   GUID: "AppleMac",
   LOGIN_KEY: "AppleLogin",
@@ -143,34 +147,34 @@ const sharedState = {
 };
 
 /**
- * Abstract Base Class for Third-Party Services
- * Provides common interface discovery and data retrieval capabilities.
- * @description Provides unified foundational functionality for all third-party services.
+ * 第三方服务抽象基类
+ * 提供通用的接口发现和数据获取能力
+ * @description 为所有第三方服务提供统一的基础功能
  */
 const ThirdPartyService = class {
   /**
-   * Abstract property: The type identifier that must be implemented by the subclass.
-   * @returns {string} The service type identifier.
+   * 抽象属性：子类必须实现的类型标识
+   * @returns {string} 服务类型标识
    */
   static get type() {
     throw new Error(
-      `The abstract property type defining the interface type must be implemented in the subclass ${this.name}`
+      `抽象属性 type 定义接口类型 必须在子类 ${this.name} 中实现`
     );
   }
 
   /**
-   * Gets a list of all available third-party interfaces.
-   * Interface naming convention: _get + InterfacesName + type
-   * @description Returns the identifiers for all currently supported third-party interfaces.
-   * @param {number} [limit=Number.MAX_SAFE_INTEGER] - Limits the number of interfaces to return; defaults to returning all interfaces.
-   * @returns {Array<string>} - An array of available third-party interface identifiers.
+   * 获取所有可用的第三方接口列表
+   * 接口命名规范：_get + InterfacesName + type
+   * @description 返回当前支持的所有第三方接口标识符
+   * @param {number} [limit=Number.MAX_SAFE_INTEGER] - 限制返回的接口数量，默认返回所有接口
+   * @returns {Array<string>} - 可用的第三方接口标识符数组
    */
   static getAvailableInterfaces(limit = Number.MAX_SAFE_INTEGER) {
     const methods = Object.getOwnPropertyNames(this);
     const excludeMethod = `_getApp${this.type}List`;
     const regex = new RegExp(`^_get(.+)${this.type}$`);
 
-    // Filter private method names that match the pattern and extract the interface name
+    // 筛选符合模式的私有方法名并提取接口名称
     return methods
       .flatMap((method) => {
         if (
@@ -186,11 +190,11 @@ const ThirdPartyService = class {
   }
 
   /**
-   * Dynamically searches for and calls a third-party interface.
-   * @description Dynamically calls the corresponding private method based on the interface name.
-   * @param {string} selset - The interface name (e.g., "Timbrd", "Bilin").
-   * @param {...any} args - Arguments passed to the specific method.
-   * @returns {Promise<any>} - The result of the interface call.
+   * 动态搜索并调用第三方接口
+   * @description 根据接口名称动态调用对应的私有方法
+   * @param {string} selset - 接口名称 (如 "Timbrd", "Bilin")
+   * @param {...any} args - 传递给具体方法的参数
+   * @returns {Promise<any>} - 接口调用结果
    */
   static async searchInterface(selset, ...args) {
     const methodName = `_get${
@@ -205,11 +209,11 @@ const ThirdPartyService = class {
   }
 
   /**
-   * Generic third-party data retrieval method.
-   * @param {string|Object} req - Request URL | Request object.
-   * @param {string} id - The application ID or query parameter.
-   * @param {Function} dataExtractor - The data extraction function.
-   * @returns {Promise<Object>} - The formatted data information.
+   * 通用第三方数据获取方法
+   * @param {string|onject} req - 请求URL|请求对象
+   * @param {string} id - 应用ID或查询参数
+   * @param {Function} dataExtractor - 数据提取函数
+   * @returns {Promise<Object>} - 格式化后的数据信息
    */
   static async _fetchThirdPartyData(req, id, dataExtractor) {
     try {
@@ -228,39 +232,39 @@ const ThirdPartyService = class {
 };
 
 /**
- * Version Query Service
- * Specifically handles application version-related queries.
- * Overrides the base class abstract property 'type', returns "Versions".
- * Interface naming convention: _get + InterfacesName + type
- * @description Inherits from ThirdPartyService, providing application version query functionality.
+ * 版本查询服务
+ * 专门处理应用版本相关查询
+ * 重写基类抽象属性 type，返回 "Versions"
+ * 接口命名规范：_get + InterfacesName + type
+ * @description 继承自 ThirdPartyService，提供应用版本查询功能
  */
 const VersionService = class extends ThirdPartyService {
   static type = "Versions";
 
   /**
-   * Gets the application version list.
-   * @description Retrieves the application version list based on the application ID and the selected third-party interface.
-   * @param {string} id - The application ID.
-   * @param {string} selset - The identifier for the selected third-party interface.
-   * @returns {Promise<[number, number][]>>} - The application version list information, where each element is [version ID, version number].
+   * 获取应用版本列表
+   * @description 根据应用ID和选择的第三方接口获取应用版本列表
+   * @param {string} id - 应用ID
+   * @param {string} selset - 选择的第三方接口标识
+   * @returns {Promise<[number, number][]>>} - 应用版本列表信息，每个元素为 [版本ID, 版本号]
    */
   static async getAppVersionList(id, selset) {
     return await this.searchInterface(selset, id);
   }
 
   /**
-   * Concurrently fetches the application version list.
-   * @description Concurrently calls all available version interfaces and returns the first successful result.
-   * @param {string} id - The application ID.
-   * @param {number} [num=Number.MAX_SAFE_INTEGER] - Limits the number of interfaces to return; defaults to returning all interfaces.
-   * @returns {Promise<Object>} - The result of the first successful version interface call.
-   * @throws {Error} - Throws an error when all interfaces fail.
+   * 并发获取应用版本列表
+   * @description 并发调用所有可用的版本接口，返回第一个成功的结果
+   * @param {string} id - 应用ID
+   * @param {number} [num=Number.MAX_SAFE_INTEGER] - 限制返回的接口数量，默认返回所有接口
+   * @returns {Promise<Object>} - 第一个成功的版本接口调用结果
+   * @throws {Error} - 当所有接口都失败时抛出错误
    */
   static async concurrentGetVersionList(id, num = Number.MAX_SAFE_INTEGER) {
     const availableInterfaces = this.getAvailableInterfaces(num);
 
     if (availableInterfaces.length === 0) {
-      throw new Error(`No available version interface`);
+      throw new Error(`没有可用的版本接口`);
     }
 
     return Promise.any(
@@ -271,9 +275,9 @@ const VersionService = class extends ThirdPartyService {
   }
 
   /**
-   * Gets the application version list via the timbrd interface (Private Method).
-   * @param {string} id - The application ID.
-   * @returns {Promise<Object>} - The application version list.
+   * 通过 timbrd 接口获取应用版本列表（私有方法）
+   * @param {string} id - 应用ID
+   * @returns {Promise<Object>} - 应用版本列表
    */
   static async _getTimbrdVersions(id) {
     const url = `https://api.timbrd.com/apple/app-version/index.php?id=${id}`;
@@ -283,14 +287,15 @@ const VersionService = class extends ThirdPartyService {
         .map(({ external_identifier, bundle_version }) => [
           external_identifier,
           bundle_version,
+          today,
         ])
     );
   }
 
   /**
-   * Gets the application version list via the bilin interface (Private Method).
-   * @param {string} id - The application ID.
-   * @returns {Promise<Object>} - The application version list.
+   * 通过 bilin 接口获取应用版本列表（私有方法）
+   * @param {string} id - 应用ID
+   * @returns {Promise<Object>} - 应用版本列表
    */
   static async _getBilinVersions(id) {
     const url = `https://apis.bilin.eu.org/history/${id}`;
@@ -298,22 +303,23 @@ const VersionService = class extends ThirdPartyService {
       body.data.map(({ external_identifier, bundle_version }) => [
         external_identifier,
         bundle_version,
+        today,
       ])
     );
   }
 };
 
-// Authentication Service | Log in to Apple Account
+// 认证服务·登录Apple账号
 const AuthService = class {
   /**
-   * Logs into the Apple account.
-   * Caches the login response.
-   * @description Logs into the Apple account to retrieve the login response data.
-   * @param {Object} op - Login parameters.
-   * @param {string} op.appleId - The Apple account (Apple ID).
-   * @param {string} op.password - The password for the Apple account.
-   * @param {string} [op.code] - The verification code, required during login.
-   * @returns {Promise<Object>} - The response data after a successful login.
+   * 登录Apple账号
+   * 缓存登录响应
+   * @description 登录Apple账号，获取登录响应数据
+   * @param {Object} op - 登录参数
+   * @param {string} op.appleId - Apple账号
+   * @param {string} op.password - Apple账号密码
+   * @param {string} [op.code] - 验证码，登录时需要提供
+   * @returns {Promise<Object>} - 登录成功后的响应数据
    */
   static async #login({ appleId, password, code }) {
     const dataJson = {
@@ -331,7 +337,7 @@ const AuthService = class {
     const parsedResp = $.plist.parse(resp.body);
 
     this.validate(parsedResp);
-    $.log("Login successful", parsedResp?.accountInfo);
+    $.log("✅登录成功", parsedResp?.accountInfo);
     const cacheLoginResp = JSON.parse(
       $.cache.get(sharedState.LOGIN_KEY) || "{}"
     );
@@ -344,11 +350,11 @@ const AuthService = class {
   }
 
   /**
-   * Loads the cached login response.
-   * @description Loads the login response from the cache; if it does not exist, it performs a login and caches the result.
-   * @param {Object} op - Login parameters.
-   * @param {string} op.appleId - The Apple ID. When the login account does not match the cached account, it will switch accounts and log in again.
-   * @returns {Promise<Object>} - The response data after a successful login.
+   * 加载缓存登录响应
+   * @description 从缓存中加载登录响应，如果不存在则进行登录并缓存
+   * @param {Object} op - 登录参数
+   * @param {string} op.appleId - Apple账号 当登录账号与缓存账号不一致时，会切换账号重新登录
+   * @returns {Promise<Object>} - 登录成功后的响应数据
    */
   static async login(op) {
     const loginResp = JSON.parse($.cache.get(sharedState.LOGIN_KEY) || null);
@@ -356,27 +362,25 @@ const AuthService = class {
     if (op && !loginResp) return await this.#login(op);
 
     if (op && op.appleId !== loginResp.accountInfo?.appleId) {
-      $.log(
-        "The login account does not match the cached account. Switching accounts to log in"
-      );
+      $.log("登录账号与缓存账号不一致, 切换账号登录");
       $.cache.remove(sharedState.LOGIN_KEY);
       return await this.#login(op);
     }
 
     if (op && op.password !== loginResp.password) {
-      $.log("Password changed! Attempting to log in again.");
+      $.log("密码变化，尝试重新登陆");
       return await this.#login(op);
     }
 
     this.validate(loginResp);
-    op && $.log("Logged in", loginResp.accountInfo);
+    op && $.log("✅已登录", loginResp.accountInfo);
     return loginResp;
   }
 
   /**
-   * Refreshes the login Cookie.
-   * @description Refreshes the Cookie for the current login, extending the login validity period.
-   * @returns {Promise<Object>} - The response data after a successful refresh.
+   * 刷新登录Cookie
+   * @description 刷新当前登录的Cookie，延长登录有效期
+   * @returns {Promise<Object>} - 刷新成功后的响应数据
    */
   static async refreshCookie() {
     const { accountInfo = {}, password } = JSON.parse(
@@ -384,58 +388,50 @@ const AuthService = class {
     );
     const { appleId } = accountInfo;
     if (!appleId || !password) {
-      throw new CustomError(
-        "Login",
-        "Not logged in. Failed to refresh Cookie, please log in again"
-      );
+      throw new CustomError("Login", "❌未登录,刷新Cookie失败,请重新登录");
     }
     return await this.#login({ appleId, password });
   }
   /**
-   * Resets the login status and cached data.
-   * @description Clears login-related cached data and GUID cache.
-   * @returns {Object} - The reset result information.
+   * 重置登录状态和缓存数据
+   * @description 清除登录相关的缓存数据和GUID缓存
+   * @returns {Object} - 重置结果信息
    */
   static reset() {
     try {
-      // Clear login cache
+      // 清除登录缓存
       $.cache.remove(sharedState.LOGIN_KEY);
-      // Clear GUID cache (MAC address)
+      // 清除GUID缓存（MAC地址）
       $.cache.remove(sharedState.GUID);
 
-      $.log("Reset successful! Login cache and GUID cache have been cleared");
+      $.log("✅重置成功，已清除登录缓存和GUID缓存");
 
       return {
         success: true,
-        message:
-          "Reset successful! Login information and GUID cache have been cleared",
+        message: "重置成功，已清除登录信息和GUID缓存",
         clearedKeys: [sharedState.LOGIN_KEY, sharedState.GUID],
       };
     } catch (error) {
-      throw new CustomError("Reset", `Reset failed: ${error.message}`);
+      throw new CustomError("Reset", `❌重置失败: ${error.message}`);
     }
   }
 
   /**
-   * Validates the login response.
-   * @param {Object} loginResp - The login response data.
-   * @throws {Error} - Throws an error if the login response is invalid.
+   * 验证登录响应
+   * @param {Object} loginResp - 登录响应数据
+   * @throws {Error} - 如果登录响应无效，抛出错误
    */
   static validate(loginResp) {
-    if (!loginResp)
-      throw new CustomError("Login", "Not logged in, please log in first.");
+    if (!loginResp) throw new CustomError("Login", "❌未登录, 请先登录");
 
     if (!loginResp.accountInfo && !loginResp.customerMessage) {
-      throw new CustomError(
-        "Login",
-        "Cache data is invalid, please log in again."
-      );
+      throw new CustomError("Login", "❌缓存数据异常， 请重新登陆");
     }
 
     if (Object.hasOwn(loginResp, "failureType")) {
       const { failureType, customerMessage } = loginResp;
       throw new CustomError("Login", [
-        "Login failed",
+        "❌登录失败",
         failureType,
         customerMessage,
       ]);
@@ -445,14 +441,14 @@ const AuthService = class {
   }
 };
 
-// Store Services | Download | Purchase
+// 商店服务·下载·购买
 const StoreService = class {
   /**
-   * Search apps
-   * @param {string} term - Search keyword
-   * @param {number} [limit=10] - Limit on the number of results returned, default is 10
-   * @param {string} [country='CN'] - Country/region to search, default is China
-   * @returns {Promise<Array>} - Array of search results
+   * 搜索应用
+   * @param {string} term - 搜索关键词
+   * @param {number} [limit=10] - 返回结果数量限制，默认10个
+   * @param {string} [country='CN'] - 搜索的国家/地区，默认中国
+   * @returns {Promise<Array>} - 搜索结果数组
    */
   static async searchApps({
     term,
@@ -460,7 +456,7 @@ const StoreService = class {
     country = "CN",
     entity = "software",
   }) {
-    // Construct search URL
+    // 构建搜索 URL
     const searchUrl = new URL("https://itunes.apple.com/search");
     searchUrl.searchParams.set("term", term.trim());
     searchUrl.searchParams.set("country", country.toLowerCase());
@@ -468,17 +464,17 @@ const StoreService = class {
     searchUrl.searchParams.set("explicit", "yes");
     searchUrl.searchParams.set("limit", limit.toString());
 
-    // Send request
+    // 发送请求
     const { body } = await $.http(searchUrl.toString(), 8);
     return body;
   }
 
   /**
-   * Get app information
-   * If the app has not been purchased, it will attempt to purchase it; throws an error if the purchase fails
-   * @param {number} salableAdamId - The app's Adam ID
-   * @param {number} [externalVersionId] - The app's external version ID, optional; if not provided, returns the latest version
-   * @returns {Promise<Object>} - App information
+   * 获取APP信息
+   * 如果未购买应用 会尝试购买应用 购买失败会抛出错误
+   * @param {number} salableAdamId - 应用的Adam ID
+   * @param {number} [externalVersionId] - 应用的外部版本 ID，可选参数，不传则返回最新版本
+   * @returns {Promise<Object>} - 应用信息
    */
   static async getAppInfo(salableAdamId, externalVersionId) {
     const { dsPersonId, Cookie } = await this.getValidatedAuth();
@@ -524,115 +520,64 @@ const StoreService = class {
   }
 
   /**
-   * Get the validated login response
-   * @description Retrieve the login response from the cache and validate its validity
-   * @throws {Error} - Throws an error if the login response is invalid
-   * @returns {Object} - Response data after successful login
+   * 获取验证后的登录响应
+   * @description 从缓存中获取登录响应并验证其有效性
+   * @throws {Error} - 如果登录响应无效，抛出错误
+   * @returns {Object} - 登录成功后的响应数据
    */
   static async getValidatedAuth() {
     return await AuthService.login();
   }
 
   /**
-   * Validate app information
-   * @param {Object} appInfo - App information
-   * @throws {Error} - Throws an error if the app information is invalid
+   * 校验应用信息
+   * @param {Object} appInfo - 应用信息
+   * @throws {Error} - 如果应用信息无效，抛出错误
    */
   static validateAppInfo(appInfo) {
-    if (!appInfo) throw new CustomError("AppInfo", "App information is empty");
+    if (!appInfo) throw new CustomError("AppInfo", "❌应用信息为空");
     if (Object.hasOwn(appInfo, "failureType")) {
       const { failureType, customerMessage } = appInfo;
       throw new CustomError("AppInfo", [
-        "Failed to retrieve app information",
+        "❌获取应用信息失败",
         failureType,
         customerMessage,
       ]);
     }
     if (!appInfo?.songList?.length) {
-      throw new CustomError(
-        "AppInfo",
-        "The app information for this version ID is empty"
-      );
+      throw new CustomError("AppInfo", "❌这个版本号的应用信息为空");
     }
 
     return true;
   }
 
   /**
-   * Batch query app versions
-   * @param {string} direction - Query direction; 'next' means query older versions, 'prev' means query newer versions
-   * @param {number} salableAdamId - The app ID to query
-   * @param {number} startVersionId - Starting version ID for the query, default is the latest version
-   * @param {number} count - Number of versions to query; default -1 returns all
-   * @returns {Promise<Array<Object>>} - List of version information
+   * 批量查询应用版本号
+   * @param {number} salableAdamId - 要查询的应用ID
+   * @param {number} startVersionId - 查询的版本ID 默认为最新版本ID
+   * @returns {Promise<Array<Object>>} - 版本信息列表
    */
-  static async getVersions({
-    direction,
-    count = -1,
-    salableAdamId,
-    startVersionId,
-  }) {
-    // Initialize by retrieving the app version list from the cache; if not present, fetch it from the API
-    const { cachedVersionsAll, versionList } = await this.getAppVersionCache(
+  static async getVersions({ salableAdamId, startVersionId }) {
+    // 初始化 从缓存中获取应用版本列表 如果缓存中不存在则从请求获取
+    const { versionList } = await this.getAppVersionCache(
       salableAdamId,
       startVersionId
     );
 
-    // No pagination
-    if (count === -1)
-      return {
-        data: versionList.entries().toArray(),
-        total: versionList.size,
-      };
-
-    // Pagination
-    let index = versionList.keys().toArray().indexOf(startVersionId);
-    if (index === -1) index = 0;
-    if (direction === "prev") index -= count;
-    if (index < 0) index = 0;
-
-    $.http.useReq((req) => Object.assign(req, { timeout: 11 }));
-    const page = versionList.entries().drop(index).take(count).toArray();
-
-    const tasks = page.map(([extVersionId, cachebuildVersion]) => async () => {
-      try {
-        if (versionList.get(extVersionId))
-          return [extVersionId, cachebuildVersion];
-        const { buildVersion } = await StoreService.getAppInfo(
-          salableAdamId,
-          extVersionId
-        );
-        versionList.set(extVersionId, buildVersion);
-        return [extVersionId, buildVersion];
-      } catch ({ message }) {
-        throw [extVersionId, message];
-      }
-    });
-
-    const { fulfilled, rejected } = await $.taskProcessor.runTasks({
-      tasks,
-      ...sharedState.CONCURRENCY_CONFIG,
-    });
-    cachedVersionsAll.put(salableAdamId, versionList.entries().toArray());
-    $.cache.set(
-      sharedState.VERSION_KEY,
-      JSON.stringify(cachedVersionsAll.toArray())
-    );
-
     return {
-      data: [...fulfilled, ...rejected],
-      total: versionList.size,
+      data: versionList,
+      total: versionList.length,
     };
   }
 
   /**
-   * Get app version cache
-   * Merge third-party API data
-   * @description Retrieve the app version list from the cache; if it does not exist, fetch it from the APIs
-   * @param {number} salableAdamId - The app's Adam ID
-   * @param {number} startVersionId - The app's external version ID, optional; if not provided, returns the latest version
-   * @returns {cachedVersionsAll} - All app versions; returns an empty array if not in cache
-   * @returns {versionList} - Current app version list (Map type, key: external version ID, value: null or version identifier); if not in cache, fetches and returns the version list
+   * 获取应用版本缓存
+   * 合并三方接口数据
+   * @description 从缓存中获取应用版本列表，如果不存在则从请求获取
+   * @param {number} salableAdamId - 应用的Adam ID
+   * @param {number} startVersionId - 应用的外部版本 ID，可选参数，不传则返回最新版本
+   * @returns {cachedVersionsAll} - 所有app版本列表，缓存中不存在则返回空数组
+   * @returns {versionList} - 当前应用版本列表(Map 类型，键为外部版本ID，值为null或者版本标识符)，缓存中不存在则拉取请求返回版本列表
    */
   static async getAppVersionCache(salableAdamId, startVersionId) {
     const cachedVersionsAll = new LRUCache(
@@ -640,8 +585,11 @@ const StoreService = class {
       JSON.parse($.cache.get(sharedState.VERSION_KEY) ?? "[]")
     );
 
-    // If the version list of the app does not exist in the cache, fetch data from the official and third-party APIs
-    if (!cachedVersionsAll.has(salableAdamId)) {
+    //如果缓存中不存在该应用的版本列表 或者缓存事件过期，则从请求获取 官方，三方接口数据
+    if (
+      !cachedVersionsAll.has(salableAdamId) ||
+      !cachedVersionsAll.get(salableAdamId)[0].includes(today)
+    ) {
       const [processedVersions, legacyVersions] = await Promise.all([
         this.#processVersionIdList(salableAdamId, startVersionId),
         VersionService.concurrentGetVersionList(salableAdamId).catch(
@@ -653,7 +601,7 @@ const StoreService = class {
       ]);
 
       if (processedVersions.length >= legacyVersions.total) {
-        // Merge data sources
+        // 合并数据源
         processedVersions.forEach((p) => {
           const legacy = legacyVersions.data.find((i) => i[0] === p[0]);
           if (legacy && p[1] === "????") p[1] = legacy[1];
@@ -671,15 +619,15 @@ const StoreService = class {
 
     return {
       cachedVersionsAll,
-      versionList: new Map(cachedVersionsAll.get(salableAdamId)),
+      versionList: cachedVersionsAll.get(salableAdamId),
     };
   }
 
   /**
-   * Initialize the version ID list, ensuring it contains at least one version ID
-   * @param {number} salableAdamId - The app's Adam ID
-   * @param {string} startVersionId - The app's external version ID, optional; if not provided, returns the latest version
-   * @returns {Array} - Formatted array of version IDs, each element in the format [id, null]
+   * 初始化版本ID列表，确保至少包含一个版本ID
+   * @param {number} salableAdamId - 应用的Adam ID
+   * @param {string} startVersionId - 应用的外部版本 ID，可选参数，不传则返回最新版本
+   * @returns {Array} - 格式化后的版本ID数组，每个元素为[id, null]格式
    */
   static async #processVersionIdList(salableAdamId, startVersionId) {
     const { externalVersionIdList, externalVersionId, displayVersion } =
@@ -689,14 +637,14 @@ const StoreService = class {
       return [[externalVersionId, displayVersion]];
     }
 
-    return externalVersionIdList.reverse().map((id) => [id, "????"]);
+    return externalVersionIdList.reverse().map((id) => [id, "????", today]);
   }
 
   /**
-   * Purchase an app
-   * @param {number} salableAdamId - The app's Adam ID
-   * @returns {Promise<string>} - The software ID of the successfully purchased app
-   * @throws {CustomError} - Throws an error if the purchase fails
+   * 购买应用
+   * @param {number} salableAdamId - 应用的Adam ID
+   * @returns {Promise<string>} - 购买成功的应用软件ID
+   * @throws {CustomError} - 如果购买失败，抛出错误
    */
   static async purchaseApp(salableAdamId) {
     const { dsPersonId, passwordToken, storeFront, Cookie } =
@@ -730,68 +678,47 @@ const StoreService = class {
 
     switch (failureType) {
       case "5002":
-        throw new CustomError("buy", "[Unknown error] Already purchased");
+        throw new CustomError("buy", "[发生未知错误] 已购买过");
       case "2040":
-        throw new CustomError(
-          "buy",
-          "[Purchase failed] Already purchased, removed from store"
-        );
+        throw new CustomError("buy", "[购买失败] 已购买过，已下架了");
       case "2059":
-        throw new CustomError(
-          "buy",
-          "[Purchase failed] Not purchased, removed from store, not available in region"
-        );
+        throw new CustomError("buy", "[购买失败] 未买过，已下架，地区未上架");
       case "1010":
-        throw new CustomError(
-          "buy",
-          "[Invalid Store] Not available in this region"
-        );
+        throw new CustomError("buy", "[无效 Store] 该地区未上架");
       case "2034":
-        throw new CustomError(
-          "buy",
-          "[Not logged in to iTunes Store] CK expired"
-        );
+        throw new CustomError("buy", "[未登录到 iTunes Store] CK过期");
       case "2042":
-        throw new CustomError(
-          "buy",
-          "[Not logged in to iTunes Store] CK empty or expired"
-        );
+        throw new CustomError("buy", "[未登录到 iTunes Store] CK为空或者过期");
       case "2019":
-        throw new CustomError(
-          "buy",
-          "[Purchase failed] Cannot directly purchase paid app"
-        );
+        throw new CustomError("buy", "[购买失败] 无法直接购买付费软件");
       case "9610":
-        throw new CustomError(
-          "buy",
-          "[License not found] Not purchased or invalid app ID"
-        );
+        throw new CustomError("buy", "[未找到许可] 没购买过或应用ID错误");
       default:
         if (failureType || failureType === "")
-          throw new CustomError("buy", `[Purchase failed] ${customerMessage}`);
+          throw new CustomError("buy", `[购买失败] ${customerMessage}`);
     }
 
     if (jingleDocType) {
-      $.log("Purchase successful", "Software ID:", salableAdamId);
+      $.log("购买成功", "软件ID:", salableAdamId);
       return salableAdamId;
     }
   }
 
   /**
-   * Format app information
-   * @param {Object} appInfo - App information object
-   * @property {string} name - App name
-   * @property {string} appId - Unique app identifier
-   * @property {string} url - App download URL
-   * @property {string} sinf - App license information
-   * @property {string} bundleId - App bundle identifier
-   * @property {string} displayVersion - User-visible version number
-   * @property {string} buildVersion - Internal build version number
-   * @property {number} externalVersionId - External version identifier
-   * @property {Array<number>} externalVersionIdList - List of external version identifiers
-   * @property {number} fileSize - File size
-   * @property {Object} metadata - iTunesMetadata.plist file content
-   * @property {string} currency - Currency unit
+   * 格式化应用信息
+   * @param {Object} appInfo - 应用信息对象
+   * @property {string} name - 应用名称
+   * @property {string} appId - 应用唯一标识符
+   * @property {string} url - 应用下载链接
+   * @property {string} sinf - 应用授权信息
+   * @property {string} bundleId - 应用包标识符
+   * @property {string} displayVersion - 用户可见版本号
+   * @property {string} buildVersion - 内部构建版本号
+   * @property {number} externalVersionId - 外部版本标识符
+   * @property {Array<number>} externalVersionIdList - 外部版本标识符列表
+   * @property {number} fileSize - 文件大小
+   * @property {Object} metadata - iTunesMetadata.plist 文件内容
+   * @property {string} currency - 货币单位
    */
   static async formatAppInfo(appInfo) {
     const {
@@ -823,23 +750,23 @@ const StoreService = class {
       accountInfo: { appleId },
     } = await this.getValidatedAuth();
 
-    Object.assign(appInfo, { appleId });
+    Object.assign(metadata, { appleId });
 
-    // Debug information output
-    // $.log("App name:", name);
-    // $.log("App download URL:", url);
-    // $.log("App icon:", icon);
-    // $.log("App ID:", appId);
-    // $.log("Software license info:", sinf);
-    // $.log("App bundle identifier:", bundleId);
-    // $.log("User version number:", displayVersion);
-    // $.log("Internal build number:", buildVersion);
-    // $.log("Version identifier:", externalVersionId);
-    // $.log("List of version identifiers:", externalVersionIdList);
-    // $.log("File size:", fileSize);
-    // $.log("iTunesMetadata.plist file:", metadata);
-    // $.log("Currency:", currency);
-    // $.log("Minimum supported OS version:", minimumOsVersion);
+    // 调试信息输出;
+    //$.log("应用名称:", name);
+    // $.log("软件下载链接:", url);
+    // $.log("应用图标:", icon);
+    // $.log("应用ID:", appId);
+    // $.log("软件授权信息:", sinf);
+    // $.log("应用包标识符:", bundleId);
+    // $.log("用户版本号:", displayVersion);
+    // $.log("内部版本号:", buildVersion);
+    // $.log("版本标识符:", externalVersionId);
+    // $.log("版本标识符列表:", externalVersionIdList);
+    // $.log("文件大小:", fileSize);
+    // $.log("iTunesMetadata.plist 文件", metadata);
+    // $.log("货币:", currency);
+    // $.log("最低支持系统版本:", minimumOsVersion);
     return {
       name,
       appId,
@@ -860,11 +787,11 @@ const StoreService = class {
 };
 
 /**
- * Unified response format handler
- * @param {boolean} success - Whether successful
- * @param {any} data - Response data
- * @param {string} error - Error message
- * @returns {Object} Uniformly formatted response object
+ * 统一响应格式处理器
+ * @param {boolean} success - 是否成功
+ * @param {any} data - 响应数据
+ * @param {string} error - 错误信息
+ * @returns {Object} 统一格式的响应对象
  */
 const createResponse = (success, data = null, error = null) => ({
   success,
@@ -875,9 +802,9 @@ const createResponse = (success, data = null, error = null) => ({
 
 /**
  * 参数验证工具函数
- * @param {boolean} condition - Validation condition
- * @param {string} message - Error information
- * @throws {Error} Throw an error when the condition is not met
+ * @param {boolean} condition - 验证条件
+ * @param {string} message - 错误信息
+ * @throws {Error} 当条件不满足时抛出错误
  */
 const validate = (condition, message) => {
   if (!condition) {
@@ -887,27 +814,22 @@ const validate = (condition, message) => {
   }
 };
 
-// Main function
+// 主函数
 const main = async () => {
   try {
-    //Preload TaskProcessor
-    const isTaskProcessor = $.import(
-      ({ fn: TaskProcessor }) => ({
-        name: "taskProcessor",
-        fn: new TaskProcessor(),
-      }),
-      "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Scripting/TaskProcessor.js"
-    );
-
     await $.imports(
-      ["* as plist", "https://esm.sh/plist"],
+      //["* as plist", "https://esm.sh/plist"],
+      [
+        "* as plist",
+        "https://github.com/longthinh/Public/raw/refs/heads/main/Scripting/PlistComplete.js",
+      ],
       [
         "express",
-        "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Scripting/SimpleExpressBeta.js",
+        "https://github.com/longthinh/Public/raw/refs/heads/main/Scripting/SimpleExpressBeta.js",
       ],
       [
         ({ name, fn }) => ({ name: name.slice(1), fn }),
-        "https://raw.githubusercontent.com/longthinh/Public/refs/heads/main/Scripting/utils.js",
+        "https://github.com/longthinh/Public/raw/refs/heads/main/Scripting/utils.js",
       ]
     );
 
@@ -929,140 +851,129 @@ const main = async () => {
 
     const app = new $.express($request);
 
-    // Add middleware
+    // 添加中间件
     app.use($.express.json());
     app.use($.express.logger());
 
-    // Root path - API information
+    // 根路径 - API 信息
     app.get("/", (req, res, next) => {
       const data = {
         name: "Apple Store API",
         version: "1.0.0",
-        description: "Apple App Store app information and purchase API",
+        description: "苹果商店应用信息和购买接口",
         endpoints: {
           "POST /auth/login": {
-            description: "User login",
+            description: "用户登录",
             body: {
-              appleId: "Apple account (required)",
-              password: "Apple account password (required)",
-              code: "Verification code (optional, required for two-factor authentication)",
+              appleId: "Apple账号 (必需)",
+              password: "Apple账号密码 (必需)",
+              code: "验证码 (可选，二次验证时需要)",
             },
           },
           "POST /auth/refresh": {
-            description: "Refresh token",
-            body: "No parameters",
+            description: "刷新 token",
+            body: "无参数",
           },
           "POST /auth/reset": {
-            description: "Reset login state and GUID cache",
-            body: "No parameters",
+            description: "重置登录状态和GUID缓存",
+            body: "无参数",
           },
           "GET /apps/:id": {
-            description: "Get app information (including download URL)",
+            description: "获取应用信息（含下载地址）",
             params: {
-              id: "appId (required)",
+              id: "应用ID (必需)",
             },
             query: {
-              appVerId:
-                "App versionId (optional, if not provided, returns the latest version)",
+              appVerId: "应用版本ID (可选，不传则返回最新版本)",
             },
           },
           "GET /apps/:id/versions": {
-            description:
-              "Officially retrieve app version history, with third-party data merged",
+            description: "官方获取应用历史版本，已合并三方数据",
             params: {
-              id: "appId (required)",
+              id: "应用ID (必需)",
             },
             query: {
-              direction:
-                "Query direction (optional, default: 'next', options: 'next' | 'prev')",
-              count:
-                "Number of results to return (optional, default: -1 for all results, page range: 1-20)",
-              appVerId:
-                "Starting versionId (optional, if not provided, starts from the latest version)",
+              appVerId: "起始版本ID (可选，不传则从最新版本开始)",
             },
           },
           "GET /apps/:id/versions/legacy": {
-            description: "Third-party app version history",
+            description: "第三方应用历史版本",
             params: {
-              id: "appId (required)",
+              id: "应用ID (必需)",
             },
             query: {
               selset:
-                "Third-party API name (optional, default: the fastest concurrent response, options: 'Timbrd' | 'Bilin')",
+                "第三方接口名称 (可选，默认 '并发返回最快的'，可选值：'Timbrd'|'Bilin')",
             },
           },
           "POST /apps/:id/purchase": {
-            description: "Purchase app",
+            description: "购买应用",
             params: {
-              id: "appId (required)",
+              id: "应用ID (必需)",
             },
-            body: "No parameters",
+            body: "无参数",
           },
           "GET /apps/search/:term": {
-            description: "Search app(s)",
+            description: "搜索应用",
             params: {
-              term: "Search keyword (required)",
+              term: "搜索关键词 (必需)",
             },
             query: {
-              limit:
-                "Number of results to return (optional, default: 10, range 1-20)",
-              country: "Country/region to search (optional, default: 'CN')",
+              limit: "返回结果数量 (可选，默认10，范围1-20)",
+              country: "搜索的国家/地区 (可选，默认'CN')",
             },
           },
         },
         responseFormat: {
           success: {
             success: true,
-            data: "Response data",
-            message: "Success message (optional)",
+            data: "响应数据",
+            message: "成功信息 (可选)",
           },
           error: {
             success: false,
             data: null,
-            message: "Error message",
+            message: "错误信息",
           },
         },
       };
       res.json(createResponse(true, data));
     });
 
-    // Login API
+    // 登录接口
     app.post("/auth/login", async (req, res, next) => {
       const { appleId, password, code } = req.body;
-      validate(
-        appleId && password,
-        "Missing required parameters: Apple ID or Password"
-      );
+      validate(appleId && password, "缺少必要参数: appleId 和 password");
 
       const result = await AuthService.login({ appleId, password, code });
       const data = {
-        message: "Login successful",
+        message: "登录成功",
         loginData: result,
       };
       res.json(createResponse(true, data));
     });
 
-    // Refresh Cookie API
+    // 刷新Cookie接口
     app.post("/auth/refresh", async (req, res, next) => {
       await AuthService.refreshCookie();
       const data = {
-        message: "Cookie refreshed successfully",
+        message: "Cookie 刷新成功",
       };
       res.json(createResponse(true, data));
     });
 
-    // API to reset login state and cache
+    // 重置登录状态和缓存接口
     app.post("/auth/reset", async (req, res, next) => {
       const result = AuthService.reset();
       res.json(createResponse(true, result));
     });
 
-    // App information retrieval API - can be used to download the app
+    // 获取应用信息接口 - 可用于下载APP
     app.get("/apps/:id", async (req, res, next) => {
       const { id } = req.params;
       const { appVerId } = req.query;
 
-      validate(!isNaN(id), "Invalid appId");
+      validate(!isNaN(id), "无效的应用 ID");
 
       const appInfo = await StoreService.getAppInfo(parseInt(id), appVerId);
       const data = {
@@ -1072,21 +983,14 @@ const main = async () => {
       res.json(createResponse(true, data));
     });
 
-    // Official API to retrieve app version history
+    // 官方获取应用历史版本信息接口
     app.get("/apps/:id/versions", async (req, res, next) => {
       const { id } = req.params;
-      const { direction = "next", count = -1, appVerId } = req.query;
+      const { appVerId } = req.query;
 
-      validate(!isNaN(id), "Invalid appId");
-      validate(
-        !isNaN(count) && count >= -1 && count <= 20,
-        "The page size must be between 1-20"
-      );
+      validate(!isNaN(id), "无效的应用 ID");
 
-      await isTaskProcessor;
       const versions = await StoreService.getVersions({
-        direction,
-        count: parseInt(count),
         salableAdamId: parseInt(id),
         startVersionId: appVerId ? parseInt(appVerId) : undefined,
       });
@@ -1094,19 +998,17 @@ const main = async () => {
       const data = {
         appId: id,
         ...versions,
-        direction,
-        count: parseInt(count),
         appVerId,
       };
       res.json(createResponse(true, data));
     });
 
-    // Third-party API to retrieve app version history
+    // 三方获取应用历史版本信息接口
     app.get("/apps/:id/versions/legacy", async (req, res, next) => {
       const { id } = req.params;
       const { selset } = req.query;
 
-      validate(!isNaN(id), "Invalid appId");
+      validate(!isNaN(id), "无效的应用 ID");
 
       const data = selset
         ? await VersionService.getAppVersionList(id, selset)
@@ -1119,31 +1021,29 @@ const main = async () => {
       res.json(createResponse(true, data));
     });
 
-    // Purchase app API
+    // 购买APP接口
     app.post("/apps/:id/purchase", async (req, res, next) => {
       const { id } = req.params;
 
-      validate(!isNaN(id), "Invalid appId");
+      validate(!isNaN(id), "无效的应用 ID");
 
       const result = await StoreService.purchaseApp(id);
       const data = {
         appId: id,
-        message: "Purchase request has been submitted",
+        message: "购买请求已提交",
         purchaseResult: result,
       };
       res.json(createResponse(true, data));
     });
 
-    // Search app API
+    // 搜索APP接口
     app.get("/apps/search/:term", async (req, res, next) => {
       const { term } = req.params;
       const { limit = 10, country } = req.query;
 
-      validate(term, "Missing required parameter: term");
-      validate(
-        limit > 0 && limit <= 20,
-        "The result count limit must be between 1-20"
-      );
+      // // 参数验证
+      validate(term, "缺少必要参数: term");
+      validate(limit > 0 && limit <= 20, "结果数量限制必须在1-20之间");
 
       const searchResult = await StoreService.searchApps({
         term,
@@ -1159,17 +1059,22 @@ const main = async () => {
       res.json(createResponse(true, data));
     });
 
-    // Add error-handling middleware
+    // 添加错误处理中间件
     app.use((err, req, res, next) => {
       $.log("API Error:", err);
 
       res
         .status(err.status || 500)
-        .json(createResponse(false, null, err.message || "Unknown error"));
+        .json(createResponse(false, null, err.message || "未知错误"));
     });
 
     const response = await app.run();
-    $done({ response });
+
+    if ($.env("Qx")) {
+      $done({ ...response, status: `HTTP/1.1 ${response.status} OK` });
+    } else {
+      $done({ response });
+    }
   } catch (error) {
     console.log(error.toString());
     console.log(error.stack);

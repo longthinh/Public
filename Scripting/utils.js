@@ -1,17 +1,17 @@
 /**
- * HTTP Client - Provides flexible HTTP request functionality and a hook system
+ * HTTP客户端 - 提供灵活的HTTP请求功能和钩子系统
  */
 
 class HttpClient {
-  // Stores environment adapters
+  // 存储环境适配器
   static _adapters = new Set([
-    // Compatible with Quantumult X
+    // 兼容Quantumult X
     ({ $auto, ...op }, handleRes) =>
       $task
         .fetch({ opts: { redirection: $auto }, ...op })
         .then(handleRes, handleRes),
 
-    // Compatible with Surge, etc.
+    // 兼容Surge等
     ({ method, $auto, ...op }, handleRes) => {
       op["auto-redirect"] = $auto;
       op.insecure = true;
@@ -20,7 +20,7 @@ class HttpClient {
       });
     },
 
-    // Compatible with node
+    //  兼容node
     ({ url, $auto, ["binary-mode"]: binary, ...op }, handleRes) => {
       op.redirect = $auto ? "follow" : "manual";
       fetch(url, op).then(
@@ -38,7 +38,7 @@ class HttpClient {
   ]);
 
   /**
-   * Get the available adapter for the current environment
+   * 获取当前环境可用的适配器
    * @private
    */
   static getAvailableAdapter = (...args) => {
@@ -50,21 +50,21 @@ class HttpClient {
       } catch {}
     }
 
-    throw new Error("Request method unsupported in the current environment");
+    throw new Error("当前环境不支持的请求方法");
   };
 
   /**
-   * Register a request adapter
-   * @param {Function} adapter - The request adapter function
+   * 注册请求适配器
+   * @param {Function} adapter - 请求适配器函数
    */
   static registerAdapter(adapter) {
     this._adapters.add(adapter);
   }
 
   /**
-   * Factory method - Creates and configures a client instance
-   * @param {Object} config - Configuration options
-   * @returns {HttpClient} Client instance
+   * 工厂方法 - 创建并配置客户端实例
+   * @param {Object} config - 配置选项
+   * @returns {HttpClient} 客户端实例
    */
   static create(config = {}) {
     const client = new HttpClient();
@@ -74,37 +74,37 @@ class HttpClient {
     return client;
   }
 
-  _hooks; // Stores request, success, and failure hooks
-  _coreHooks; // Reference to core hooks
+  _hooks; // 存储请求、成功和失败钩子
+  _coreHooks; // 核心钩子引用
 
   /**
-   * Constructor
-   * @param {number} timeout - Default timeout in seconds
+   * 构造函数
+   * @param {number} timeout - 默认超时时间(秒)
    */
   constructor() {
     this._hooks = {
-      req: new Set(), // Pre-request hook
-      ok: new Set(), // Successful response hook
-      fail: new Set(), // Failed response hook
+      req: new Set(), // 请求前钩子
+      ok: new Set(), // 成功响应钩子
+      fail: new Set(), // 失败响应钩子
     };
 
-    this._initDefaults(); // Initialize default settings
-    this._initCoreHooks(); // Initialize core hooks
-    return this._initHttpMethods(); // Initialize request methods
+    this._initDefaults(); // 初始化默认设置
+    this._initCoreHooks(); // 初始化核心钩子
+    return this._initHttpMethods(); // 初始化请求方法
   }
 
   /**
-   * Create a new instance from the current instance
-   * @param {Object} extraConfig - Extra configuration (optional)
-   * @returns {HttpClient} New client instance
+   * 从当前实例创建新实例
+   * @param {Object} extraConfig - 额外配置(可选)
+   * @returns {HttpClient} 新客户端实例
    */
   create(extraConfig) {
-    // Call the static create method
+    // 调用静态create方法
     return HttpClient.create(extraConfig ?? this.defaults);
   }
 
   /**
-   * Run successful response hooks
+   * 运行成功响应钩子
    * @private
    */
   _runOkHook(res, op) {
@@ -112,7 +112,7 @@ class HttpClient {
   }
 
   /**
-   * Run failed response hooks
+   * 运行失败响应钩子
    * @private
    */
   _runFailHook(error, reject) {
@@ -121,7 +121,7 @@ class HttpClient {
   }
 
   /**
-   * Run request hooks
+   * 运行请求钩子
    * @private
    */
   _runReqHook(request) {
@@ -129,7 +129,7 @@ class HttpClient {
   }
 
   /**
-   * Generic hook execution function
+   * 通用钩子运行函数
    * @private
    */
   async _runHooks(type, ...args) {
@@ -145,28 +145,28 @@ class HttpClient {
   }
 
   /**
-   * Add a request hook
+   * 添加请求钩子
    */
   useReq(...args) {
     return this._addHook("req", ...args);
   }
 
   /**
-   * Add a response hook
+   * 添加响应钩子
    */
   useRes(...args) {
     return this._addHook("ok", ...args);
   }
 
   /**
-   * Add an error hook
+   * 添加错误钩子
    */
   useErr(...args) {
     return this._addHook("fail", ...args);
   }
 
   /**
-   * Generic method to add a hook
+   * 通用添加钩子方法
    * @private
    */
   _addHook(type, ...args) {
@@ -183,8 +183,8 @@ class HttpClient {
   }
 
   /**
-   * Clear hooks
-   * @param {string} type - Optional, specifies hook type
+   * 清除钩子
+   * @param {string} type - 可选,指定钩子类型
    */
   clear(type) {
     if (type) this._hooks[type]?.clear();
@@ -196,18 +196,18 @@ class HttpClient {
   }
 
   /**
-   * Initialize HTTP methods
+   * 初始化请求方法
    * @private
    */
   _initHttpMethods() {
     /**
-     * Send an HTTP request
-     * @param {Object|string} opt - Request options or URL
-     * @returns {Promise} Request result
+     * 发送HTTP请求
+     * @param {Object|string} opt - 请求选项或URL
+     * @returns {Promise} 请求结果
      */
     const request = async (opt, t = 4) => {
       const { promise, resolve, reject } = Promise.withResolvers();
-      // HTTP Error constructor
+      // HTTP错误构造器
       const HTTPError = (e, response, request) =>
         Object.assign(new Error(e), {
           name: "HTTPError",
@@ -215,9 +215,9 @@ class HttpClient {
           response,
         });
 
-      // Process the request
+      // 处理请求
       const { timeout, ...op } = await this._runReqHook(opt);
-      // Response handler function
+      // 响应处理函数
       const handleRes = async (res) => {
         try {
           res.status ??= res.statusCode;
@@ -236,21 +236,21 @@ class HttpClient {
         }
       };
 
-      // Set timeout
+      // 设置超时
       const timer = setTimeout(
         () => reject(HTTPError("timeout", null, op)),
         (timeout ?? t) * 1000
       );
 
-      // Send request
+      // 发送请求
       HttpClient.getAvailableAdapter(op, handleRes);
 
-      // Return the promise and clear the timeout timer
+      // 返回promise并清理超时定时器
       return promise.finally(() => clearTimeout(timer));
     };
 
     /**
-     * Initialize request methods
+     * 初始化请求方法
      * @private
      */
     const methods = [
@@ -270,18 +270,18 @@ class HttpClient {
     });
 
     /**
-     * Trick to set the prototype of 'request' to the HttpClient instance
+     * 骚操作将request原型该为HttpClient实例
      */
     return Object.setPrototypeOf(request, this);
   }
 
   /**
-   * Initialize core hooks
+   * 初始化核心钩子
    * @private
    */
   _initCoreHooks() {
     this._coreHooks = {
-      // Handle default options
+      // 处理默认选项
       useDefaultOpt: this.useReq("default", (req) => {
         if (!req.url) req = { url: req, method: "get" };
         req.$auto ??= true;
@@ -289,7 +289,7 @@ class HttpClient {
         return Object.assign(req, JSON.parse(JSON.stringify(this.defaults)));
       }),
 
-      // Handle base URL
+      // 处理基础URL
       useBaseURL: this.useReq("default", (req) => {
         if (!req.baseURL && this.defaults?.baseURL) {
           req.baseURL = this.defaults.baseURL;
@@ -304,7 +304,7 @@ class HttpClient {
         return req;
       }),
 
-      // Normalize response headers
+      // 规范化响应头
       useNormHeaders: this.useRes("default", (res) => {
         const { headers = {} } = res;
         const newHeaders = {};
@@ -315,7 +315,7 @@ class HttpClient {
         return res;
       }),
 
-      // Automatically handle binary response
+      // 自动处理二进制响应
       useBinaryResponse: this.useRes("default", (res, req) => {
         const { bodyBytes } = res;
         const { headers } = req;
@@ -325,7 +325,7 @@ class HttpClient {
         return res;
       }),
 
-      // Automatic JSON parsing
+      // 自动JSON解析
       useAutoJson: this.useRes("default", (res) => {
         const { headers = {} } = res;
         const content = headers["content-type"] ?? headers["Content-Type"];
@@ -340,7 +340,7 @@ class HttpClient {
   }
 
   /**
-   * Initialize default settings
+   * 初始化默认设置
    * @private
    */
   _initDefaults() {
@@ -349,7 +349,7 @@ class HttpClient {
 
     this.defaults = new Proxy(
       {
-        // Expose hook addition methods
+        // 暴露钩子添加方法
         transformReq: this.useReq.bind(this),
         transformRes: this.useRes.bind(this),
         transformErr: this.useErr.bind(this),
@@ -370,7 +370,7 @@ class HttpClient {
   }
 
   /**
-   * Core hooks accessor
+   * 核心钩子访问器
    */
   get coreHooks() {
     const set = (obj) => {
@@ -379,7 +379,7 @@ class HttpClient {
         if (!obj[key].isDefault && this._coreHooks[key]?.isDefault) {
           obj[key].remove();
           throw new Error(
-            `Core hook '${key}' already exists and an attempt was made to overwrite it in a non-default way, operation blocked.`
+            `核心钩子 '${key}' 已存在且尝试以非默认方式覆盖，操作被阻止。`
           );
         }
       });
@@ -401,9 +401,9 @@ class HttpClient {
   }
 
   /**
-   * Configure the client
-   * @param {Object} opts - Configuration options
-   * @returns {HttpClient} Client instance (chainable)
+   * 配置客户端
+   * @param {Object} opts - 配置选项
+   * @returns {HttpClient} 客户端实例(链式调用)
    */
   config(opts) {
     Object.assign(this.defaults, opts);
@@ -430,7 +430,7 @@ export const $env = (type) => {
       return ($env.result = envName);
   }
 
-  throw new Error("Environment unsupported");
+  throw new Error("环境不支持");
 };
 
 export const $cache = {

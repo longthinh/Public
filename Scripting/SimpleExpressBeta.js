@@ -1,7 +1,7 @@
 /**
- * Utility function: Converts all keys of an object to lowercase.
- * @param {Object} obj - The input object.
- * @returns {Object} The converted object, with all keys in lowercase.
+ * 工具函数：将对象的所有键转换为小写
+ * @param {Object} obj - 输入对象
+ * @returns {Object} 转换后的对象，键均为小写
  */
 const toLowerCaseKeys = (obj) => {
   return Object.entries(obj).reduce((acc, [key, value]) => {
@@ -11,12 +11,12 @@ const toLowerCaseKeys = (obj) => {
 };
 
 /**
- * Utility function to get the data type.
- * @param {*} data - The data to be checked.
- * @returns {string} The data type.
+ * 获取数据类型的工具函数
+ * @param {*} data - 要检测的数据
+ * @returns {string} 数据类型
  */
 const getDataType = (data) => {
-  // Handle null values
+  // 处理空值
   if (data === null || data === undefined) {
     return "null";
   }
@@ -31,33 +31,33 @@ const getDataType = (data) => {
     return "Uint8Array";
   }
 
-  // Handle object type (excluding null)
+  // 处理对象类型（排除null）
   if (typeof data === "object" && data !== null) {
     return "object";
   }
 
-  // Handle string type - intelligently check if it's HTML
+  // 处理字符串类型 - 智能判断是否为HTML
   if (typeof data === "string") {
     const isHtml = /<[^>]*>/.test(data);
     return isHtml ? "html" : "string";
   }
 
-  // Handle number type
+  // 处理数字类型
   if (typeof data === "number") {
     return "number";
   }
 
-  // Other types
+  // 其他类型
   return "other";
 };
 
 /**
- * Utility function to format log output.
- * @param {Request} req - The request object.
- * @param {Response} res - The response object.
- * @param {number} duration - The request processing time (milliseconds).
- * @param {string} format - The log format ('combined', 'common', 'short', 'tiny').
- * @returns {string} The formatted log string.
+ * 格式化日志输出的工具函数
+ * @param {Request} req - 请求对象
+ * @param {Response} res - 响应对象
+ * @param {number} duration - 请求处理时间（毫秒）
+ * @param {string} format - 日志格式 ('combined', 'common', 'short', 'tiny')
+ * @returns {string} 格式化的日志字符串
  */
 const formatLog = (req, res, duration, format) => {
   const timestamp = new Date().toISOString();
@@ -82,9 +82,9 @@ const formatLog = (req, res, duration, format) => {
 };
 
 /**
- * Private method to parse query parameters.
- * @param {string} search - The search part of the URL.
- * @returns {Object} The parsed query parameter object.
+ * 解析查询参数的私有方法
+ * @param {string} search - URL的search部分
+ * @returns {Object} 解析后的查询参数对象
  */
 const parseQuery = (search) => {
   if (!search || search === "?") return {};
@@ -97,10 +97,10 @@ const parseQuery = (search) => {
 };
 
 /**
- * Path matching (supports parameters).
- * @param {string} routePath - The route path.
- * @param {string} requestPath - The request path.
- * @returns {Object} The matching result object.
+ * 路径匹配（支持参数）
+ * @param {string} routePath - 路由路径
+ * @param {string} requestPath - 请求路径
+ * @returns {Object} 匹配结果对象
  * @private
  */
 const matchPath = (routePath, requestPath) => {
@@ -110,7 +110,7 @@ const matchPath = (routePath, requestPath) => {
   let starIdx = 0;
 
   const pattern = routePath
-    // Unnamed * → params["0"], "1", ...
+    // 未命名 * → params["0"], "1", ...
     .replace(/\/\*/g, () => {
       const key = String(starIdx++);
       keys.push(key);
@@ -121,27 +121,27 @@ const matchPath = (routePath, requestPath) => {
       keys.push(key);
       return `(${pat})`;
     })
-    // :name+  One or more segments
+    // :name+  一或多段
     .replace(/:(\w+)\+/g, (_, key) => {
       keys.push(key);
       return "([^/]+(?:\\/[^/]+)*)";
     })
-    // :name*  Zero or more segments
+    // :name*  零或多段
     .replace(/:(\w+)\*/g, (_, key) => {
       keys.push(key);
       return "(.*)?";
     })
-    // :name? Optional single segment (at the start)
+    // :name? 可选单段（开头）
     .replace(/^:(\w+)\?/, (_, key) => {
       keys.push(key);
       return "([^/]+)?";
     })
-    // :name? Optional single segment (with slash)
+    // :name? 可选单段（带斜杠）
     .replace(/\/:(\w+)\?/, (_, key) => {
       keys.push(key);
       return "(?:/([^/]+))?";
     })
-    // Normal :name
+    // 普通 :name
     .replace(/:(\w+)/g, (_, key) => {
       keys.push(key);
       return "([^/]+)";
@@ -164,11 +164,11 @@ const matchPath = (routePath, requestPath) => {
     : { match: true };
 };
 
-// 1. Request Class - Handles request-related functionality
+// 1. Request 类 - 处理请求相关功能
 class Request {
   /**
-   * Creates a Request instance.
-   * @param {Object} originalReq - The original request object.
+   * 创建Request实例
+   * @param {Object} originalReq - 原始请求对象
    */
   constructor(originalReq) {
     const u = new URL(originalReq.url);
@@ -192,18 +192,18 @@ class Request {
   }
 
   /**
-   * Gets the request header field value.
-   * @param {string} field - The request header field name.
-   * @returns {string} The request header field value.
+   * 获取请求头字段值
+   * @param {string} field - 请求头字段名
+   * @returns {string} 请求头字段值
    */
   get(field) {
     return this.headers[field.toLowerCase()];
   }
 
   /**
-   * Checks if the client accepts the specified MIME type.
-   * @param {string} type - The MIME type.
-   * @returns {boolean} Whether the type is accepted.
+   * 检查客户端是否接受指定的MIME类型
+   * @param {string} type - MIME类型
+   * @returns {boolean} 是否接受该类型
    */
   accepts(type) {
     const accept = this.get("accept") || "*/*";
@@ -211,9 +211,9 @@ class Request {
   }
 
   /**
-   * Checks if the client accepts the specified character set.
-   * @param {string} charset - The character set.
-   * @returns {boolean} Whether the character set is accepted.
+   * 检查客户端是否接受指定的字符集
+   * @param {string} charset - 字符集
+   * @returns {boolean} 是否接受该字符集
    */
   acceptsCharset(charset) {
     const acceptCharset = this.get("accept-charset") || "*";
@@ -221,9 +221,9 @@ class Request {
   }
 
   /**
-   * Parses the Range header for partial content requests.
-   * @param {number} size - The total size of the resource.
-   * @returns {Object|null} The Range object or null.
+   * 解析Range头，用于处理部分内容请求
+   * @param {number} size - 资源总大小
+   * @returns {Object|null} Range对象或null
    */
   range(size) {
     const rangeHeader = this.get("range");
@@ -239,8 +239,8 @@ class Request {
   }
 
   /**
-   * Gets the Content-Type of the request body.
-   * @returns {string|null} The Content-Type or null.
+   * 获取请求体的Content-Type类型
+   * @returns {string|null} Content-Type或null
    */
   contentType() {
     const contentType = this.get("content-type");
@@ -249,12 +249,12 @@ class Request {
   }
 
   /**
-   * Gets a parameter value, searching by priority: params, body, query.
-   * @param {string} name - The parameter name.
-   * @returns {*} The parameter value, or undefined if not found.
+   * 获取参数值，按优先级从params、body、query中查找
+   * @param {string} name - 参数名
+   * @returns {*} 参数值，如果未找到返回undefined
    */
   param(name) {
-    // Search in order of priority: params -> body -> query
+    // 按优先级顺序查找：params -> body -> query
     if (this.params && this.params[name] !== undefined) {
       return this.params[name];
     }
@@ -268,16 +268,16 @@ class Request {
   }
 
   /**
-   * Gets the raw request body data.
-   * @returns {*} The raw request body data.
+   * 获取原始请求体数据
+   * @returns {*} 原始请求体数据
    */
   raw() {
     return this.body;
   }
 
   /**
-   * Gets the request body in text format.
-   * @returns {string} The request body in text format.
+   * 获取文本格式的请求体
+   * @returns {string} 文本格式的请求体
    */
   text() {
     if (!this.body) return "";
@@ -285,30 +285,30 @@ class Request {
   }
 
   /**
-   * Parses the request body in JSON format.
-   * @returns {Object} The parsed JSON object.
-   * @throws {Error} When the request body is not in JSON format or parsing fails.
+   * 解析JSON格式的请求体
+   * @returns {Object} 解析后的JSON对象
+   * @throws {Error} 当请求体不是JSON格式或解析失败时
    */
   json() {
     if (this.contentType() !== "application/json") {
-      throw new Error("Request body is not in JSON format");
+      throw new Error("请求体不是JSON格式");
     }
     try {
       const text = this.text();
       return text ? JSON.parse(text) : {};
     } catch (error) {
-      throw new Error("JSON parsing failed: " + error.message);
+      throw new Error("JSON解析失败: " + error.message);
     }
   }
 
   /**
-   * Parses form data.
-   * @returns {Object} The parsed form data object.
-   * @throws {Error} When the request body is not in form format.
+   * 解析表单数据
+   * @returns {Object} 解析后的表单数据对象
+   * @throws {Error} 当请求体不是表单格式时
    */
   formData() {
     if (this.contentType() !== "application/x-www-form-urlencoded") {
-      throw new Error("Request body is not in form format");
+      throw new Error("请求体不是表单格式");
     }
     const text = this.text();
     if (!text) return {};
@@ -322,9 +322,9 @@ class Request {
   }
 }
 
-// 2. Response Class - Handles response-related functionality
+// 2. Response 类 - 处理响应相关功能
 class Response {
-  // HTTP status code mapping table
+  // HTTP状态码映射表
   static STATUS_CODES = {
     200: "OK",
     201: "Created",
@@ -345,8 +345,8 @@ class Response {
   #originalRes;
 
   /**
-   * Creates a Response instance.
-   * @param {Object} #originalRes - The original response object.
+   * 创建Response实例
+   * @param {Object} #originalRes - 原始响应对象
    */
   constructor(originalRes = {}) {
     const { status = 200, headers = {}, body = "" } = originalRes;
@@ -354,27 +354,27 @@ class Response {
   }
 
   /**
-   * Gets the response status code.
-   * @returns {number} The HTTP status code.
+   * 获取响应状态码
+   * @returns {number} HTTP状态码
    */
   get statusCode() {
     return this.#originalRes.status;
   }
 
   /**
-   * Sets the status code.
-   * @param {number} code - The HTTP status code.
-   * @returns {Response} Supports chaining.
+   * 设置状态码
+   * @param {number} code - HTTP状态码
+   * @returns {Response} 支持链式调用
    */
   status(code) {
     this.#originalRes.status = code;
-    return this; // Supports chaining
+    return this; // 支持链式调用
   }
 
   /**
-   * Sends a status code response.
-   * @param {number} statusCode - The HTTP status code.
-   * @returns {Response} Supports chaining.
+   * 发送状态码响应
+   * @param {number} statusCode - HTTP状态码
+   * @returns {Response} 支持链式调用
    */
   sendStatus(statusCode) {
     const statusText = Response.STATUS_CODES[statusCode] || "Unknown";
@@ -384,28 +384,28 @@ class Response {
   }
 
   /**
-   * Gets the status text.
-   * @param {number} code - The HTTP status code.
-   * @returns {string} The status text.
+   * 获取状态文本
+   * @param {number} code - HTTP状态码
+   * @returns {string} 状态文本
    */
   getStatusText(code) {
     return Response.STATUS_CODES[code] || "Unknown";
   }
 
   /**
-   * Sets a response header.
-   * @param {string} name - The response header name.
-   * @param {string} value - The response header value.
+   * 设置响应头
+   * @param {string} name - 响应头名称
+   * @param {string} value - 响应头值
    */
   setHeader(name, value) {
     this.#originalRes.headers[name.toLowerCase()] = value;
   }
 
   /**
-   * Sets response headers (supports object and key-value pairs).
-   * @param {string|Object} field - The response header field name or object.
-   * @param {string} value - The response header value.
-   * @returns {Response} Supports chaining.
+   * 设置响应头（支持对象和键值对）
+   * @param {string|Object} field - 响应头字段名或对象
+   * @param {string} value - 响应头值
+   * @returns {Response} 支持链式调用
    */
   set(field, value) {
     if (typeof field === "object") {
@@ -419,27 +419,27 @@ class Response {
   }
 
   /**
-   * Gets a response header.
-   * @param {string} name - The response header name.
-   * @returns {string} The response header value.
+   * 获取响应头
+   * @param {string} name - 响应头名称
+   * @returns {string} 响应头值
    */
   getHeader(name) {
     return this.#originalRes.headers[name.toLowerCase()];
   }
 
   /**
-   * Gets a response header.
-   * @param {string} field - The response header field name.
-   * @returns {string} The response header value.
+   * 获取响应头
+   * @param {string} field - 响应头字段名
+   * @returns {string} 响应头值
    */
   get(field) {
     return field ? this.getHeader(field) : { ...this.#originalRes.headers };
   }
 
   /**
-   * Ends the response (core method, control flow reflection).
-   * @param {*} data - The response data.
-   * @throws {ResponseEndedError} Response ended error.
+   * 结束响应（核心方法，控制流反射）
+   * @param {*} data - 响应数据
+   * @throws {ResponseEndedError} 响应结束错误
    */
   end(data) {
     this.#originalRes.body = data;
@@ -447,8 +447,8 @@ class Response {
   }
 
   /**
-   * Sends a JSON response.
-   * @param {*} data - The data to send.
+   * 发送JSON响应
+   * @param {*} data - 要发送的数据
    */
   json(data) {
     this.set("Content-Type", "application/json; charset=utf-8");
@@ -456,56 +456,56 @@ class Response {
   }
 
   /**
-   * Smartly sends a response.
-   * @param {*} data - The data to send.
+   * 智能发送响应
+   * @param {*} data - 要发送的数据
    */
   send(data) {
-    // Get data type for switch case
+    // 获取数据类型用于switch判断
     switch (getDataType(data)) {
       case "null":
-        // Handle null value case
+        // 处理空值情况
         this.end();
         break;
 
       case "Uint8Array":
       case "ArrayBuffer":
-        // Handle Buffer type
+        // 处理Buffer类型
         this.set("Content-Type", "application/octet-stream").end(data);
         break;
 
       case "object":
-        // Handle object type (including arrays)
+        // 处理对象类型（包括数组）
         this.json(data);
         break;
 
       case "html":
-        // Handle HTML string
+        // 处理HTML字符串
         this.set("Content-Type", "text/html; charset=utf-8").end(data);
         break;
 
       case "string":
-        // Handle plain string
+        // 处理普通字符串
         this.set("Content-Type", "text/plain; charset=utf-8").end(data);
         break;
 
       case "number":
-        // Handle number type - convert to string and set as plain text
+        // 处理数字类型 - 转换为字符串并设置为纯文本
         this.set("Content-Type", "text/plain; charset=utf-8").end(String(data));
         break;
 
       default:
-        // Handle other types - convert to string
+        // 处理其他类型 - 转换为字符串
         this.set("Content-Type", "text/plain; charset=utf-8").end(String(data));
         break;
     }
   }
 }
 
-// 3. Response Ended Error Class
+// 3. 响应结束错误类
 class ResponseEndedError extends Error {
   /**
-   * Creates a Response Ended Error instance.
-   * @param {*} value - The return value.
+   * 创建响应结束错误实例
+   * @param {*} value - 返回值
    */
   constructor(value) {
     super("ResponseEndedError");
@@ -513,11 +513,11 @@ class ResponseEndedError extends Error {
   }
 }
 
-// 4. Middleware Error Class
+// 4 中间件错误类
 class MiddlewareError extends Error {
   /**
-   * Creates a Middleware Error instance.
-   * @param {string} message - The error message.
+   * 创建中间件错误实例
+   * @param {string} message - 错误信息
    */
   constructor(message) {
     super(message);
@@ -526,20 +526,20 @@ class MiddlewareError extends Error {
 }
 
 /**
- * Minimalist Express implementation - includes only middleware and routing.
- * Focuses on core functionality, maintaining maximum simplicity.
+ * 极简Express实现 - 只包含中间件和路由
+ * 专注核心功能，保持最大简洁性
  */
 export default class SimpleExpress {
-  #originalReq; // Original request object
-  #originalRes; // Original response object
-  #middlewares = []; // List of middlewares
-  #errorMiddlewares = []; // List of error handling middlewares
-  #routes = []; // Route mapping
+  #originalReq; // 原始请求对象
+  #originalRes; // 原始响应对象
+  #middlewares = []; // 中间件列表
+  #errorMiddlewares = []; // 错误处理中间件列表
+  #routes = []; // 路由映射
 
   /**
-   * Creates a SimpleExpress instance.
-   * @param {Object} request - The request object.
-   * @param {Object} response - The response object.
+   * 创建SimpleExpress实例
+   * @param {Object} request - 请求对象
+   * @param {Object} response - 响应对象
    */
   constructor(request, response) {
     this.#originalReq = request;
@@ -547,16 +547,16 @@ export default class SimpleExpress {
     this.#initializeHttpMethods();
   }
 
-  // ==================== Static Middleware Methods ====================
+  // ==================== 静态中间件方法 ====================
 
   /**
-   * JSON request body parsing middleware.
-   * @returns {Function} The middleware function.
+   * JSON请求体解析中间件
+   * @returns {Function} 中间件函数
    */
   static json() {
     return (req, res, next) => {
       try {
-        // Check Content-Type
+        // 检查Content-Type
         const contentType = req.contentType();
         if (!contentType || !contentType.includes("application/json")) {
           return next();
@@ -564,28 +564,26 @@ export default class SimpleExpress {
 
         const jsonData = req.json();
         if (typeof jsonData !== "object") {
-          return next(
-            new Error("JSON format error: Must be an object or array")
-          );
+          return next(new Error("JSON格式错误：必须是对象或数组"));
         }
 
-        // Set the parsed data to req.body
+        // 设置解析后的数据到req.body
         req.body = jsonData;
         next();
       } catch (error) {
-        next(new Error(`JSON parsing failed: ${error.message}`));
+        next(new Error(`JSON解析失败: ${error.message}`));
       }
     };
   }
 
   /**
-   * URL-encoded data parsing middleware.
-   * @returns {Function} The middleware function.
+   * URL编码数据解析中间件
+   * @returns {Function} 中间件函数
    */
   static urlencoded() {
     return (req, res, next) => {
       try {
-        // Check Content-Type
+        // 检查Content-Type
         const contentType = req.contentType();
         if (
           !contentType ||
@@ -594,40 +592,40 @@ export default class SimpleExpress {
           return next();
         }
 
-        // Parse form data
+        // 解析表单数据
         const formData = req.formData();
 
-        // Set the parsed data to req.body
+        // 设置解析后的数据到req.body
         req.body = formData;
         next();
       } catch (error) {
-        next(new Error(`Form data parsing failed: ${error.message}`));
+        next(new Error(`表单数据解析失败: ${error.message}`));
       }
     };
   }
 
   /**
-   * Request logging middleware.
-   * @param {Object} options - Logging configuration options.
-   * @param {string} options.format - Log format ('combined', 'common', 'short', 'tiny').
-   * @param {Function} options.skip - Function for condition to skip logging.
-   * @returns {Function} The middleware function.
+   * 请求日志记录中间件
+   * @param {Object} options - 日志配置选项
+   * @param {string} options.format - 日志格式 ('combined', 'common', 'short', 'tiny')
+   * @param {Function} options.skip - 跳过日志的条件函数
+   * @returns {Function} 中间件函数
    */
   static logger(options = {}) {
     const { format = "combined", skip } = options;
 
     return (req, res, next) => {
-      // If skip condition exists and is met, skip logging
+      // 如果有跳过条件且满足，则跳过日志
       if (skip && skip(req, res)) {
         return next();
       }
 
       const startTime = Date.now();
 
-      // Record request start time
+      // 记录请求开始时间
       req.startTime = startTime;
 
-      // Listen for response end event (simulation)
+      // 监听响应结束事件（模拟）
       const originalEnd = res.end;
       res.end = function (...args) {
         const duration = Date.now() - startTime;
@@ -641,26 +639,26 @@ export default class SimpleExpress {
   }
 
   /**
-   * Registers middleware.
-   * @param {...*} args - Path and middleware function(s).
-   * @returns {SimpleExpress} Supports chaining.
+   * 注册中间件
+   * @param {...*} args - 路径和中间件函数
+   * @returns {SimpleExpress} 支持链式调用
    */
   use(...args) {
     const handler = args.pop();
     const [path = "*"] = args;
 
     if (handler.length === 4) {
-      // Error handling middleware (4 arguments: err, req, res, next)
+      // 错误处理中间件（4个参数：err, req, res, next）
       this.#errorMiddlewares.push({ handler });
     } else {
-      // Middleware (3 arguments: req, res, next)
+      // 中间件（3个参数：req, res, next）
       this.#middlewares.push({ path, handler });
     }
     return this;
   }
 
   /**
-   * Initializes HTTP methods.
+   * 初始化HTTP方法
    * @private
    */
   #initializeHttpMethods() {
@@ -682,11 +680,11 @@ export default class SimpleExpress {
   }
 
   /**
-   * Registers a route.
-   * @param {string} method - The HTTP method.
-   * @param {string} path - The path.
-   * @param {Function} handler - The handler function.
-   * @returns {SimpleExpress} Supports chaining.
+   * 注册路由
+   * @param {string} method - HTTP方法
+   * @param {string} path - 路径
+   * @param {Function} handler - 处理函数
+   * @returns {SimpleExpress} 支持链式调用
    * @private
    */
   #route(method, path, handler) {
@@ -695,8 +693,8 @@ export default class SimpleExpress {
   }
 
   /**
-   * Startup method - Public API entry point.
-   * @returns {Promise<*>} The processing result.
+   * 启动方法 - 公共API入口
+   * @returns {Promise<*>} 处理结果
    */
   async run() {
     return await this.#handleRequest(
@@ -706,11 +704,11 @@ export default class SimpleExpress {
   }
 
   /**
-   * Handles the request.
-   * @param {Request} req - The request object.
-   * @param {Response} res - The response object.
-   * @param {Error} error - The error object.
-   * @returns {Promise<*>} The processing result.
+   * 处理请求
+   * @param {Request} req - 请求对象
+   * @param {Response} res - 响应对象
+   * @param {Error} error - 错误对象
+   * @returns {Promise<*>} 处理结果
    * @private
    */
   async #handleRequest(req, res, error) {
@@ -729,46 +727,46 @@ export default class SimpleExpress {
   }
 
   /**
-   * Executes middlewares.
-   * @param {Request} req - The request object.
-   * @param {Response} res - The response object.
+   * 执行中间件
+   * @param {Request} req - 请求对象
+   * @param {Response} res - 响应对象
    * @returns {Promise<void>}
    * @private
    */
   async #runMiddlewares(req, res) {
-    await this.#createNext(this.#middlewares, req, res); // 1️⃣ First execute general middlewares
-    await this.#createNext(this.#routes, req, res); // 2️⃣ Then execute route middlewares
+    await this.#createNext(this.#middlewares, req, res); // 1️⃣ 先执行通用中间件
+    await this.#createNext(this.#routes, req, res); // 2️⃣ 再执行路由中间件
 
-    // 🚫 Fallback 404 handler: No matching route
+    // 🚫 兜底404处理：没有匹配的路由
     res.status(404).json({ error: "Not Found" });
   }
 
   /**
-   * Error middleware handler.
-   * @param {Error} error - The error object.
-   * @param {Request} req - The request object.
-   * @param {Response} res - The response object.
+   * 错误中间件处理
+   * @param {Error} error - 错误对象
+   * @param {Request} req - 请求对象
+   * @param {Response} res - 响应对象
    * @returns {Promise<void>}
    * @private
    */
   async #errorMiddleware(error, req, res) {
     await this.#createNext(this.#errorMiddlewares, req, res, error);
-    // 🚫 Fallback 500 handler: Server error
+    // 🚫 兜底500处理：服务器错误
     res.status(500).json({ error: error.message });
   }
 
   /**
-   * Creates the next function generator.
-   * @param {Array} tasks - The task list.
-   * @param {Request} req - The request object.
-   * @param {Response} res - The response object.
-   * @param {Error} error - The error object.
+   * 创建next函数生成器
+   * @param {Array} tasks - 任务列表
+   * @param {Request} req - 请求对象
+   * @param {Response} res - 响应对象
+   * @param {Error} error - 错误对象
    * @returns {Promise<void>}
    * @private
    */
   async #createNext(tasks, req, res, error) {
     for (let i = 0, j = 0; i < tasks.length; j++) {
-      if (j > i) throw new Error("Please use next to pass the next middleware");
+      if (j > i) throw new Error("请使用next传递下一个中间件");
       const { path = "*", handler, method } = tasks[i];
       const { match, params } = matchPath(path, req.path);
       if (!match || (method && method !== req.method)) {
@@ -781,15 +779,15 @@ export default class SimpleExpress {
         if (input && input !== "route") {
           const inputError = new MiddlewareError(input?.message ?? input);
           if (error) {
-            // Error middleware, continue passing the error
+            // 错误中间件，继续传递错误
             error = inputError;
           } else {
-            // Regular middleware, jump to error middleware
+            //普通中间件跳转到错误中间件
             throw inputError;
           }
         }
 
-        // Keyword matched successfully, skip the next middleware
+        // 关键字匹配成功，跳过下一个中间件
         if (input === "route" && method) i++, j++;
       };
 
@@ -799,3 +797,29 @@ export default class SimpleExpress {
     }
   }
 }
+
+//测试代码;
+// $request.url = "https://api.exchangerate-api.com/v4/latest/CNY";
+
+// const app = new SimpleExpress($request);
+
+// app.use(SimpleExpress.json());
+
+// app.use((req, res, next) => {
+//   console.log(req.method, req.path);
+//   next();
+// });
+
+// app.post("/", (req, res, next) => {
+//   // console.log(typeof req.body);
+//   res.send("我很屌呀");
+// });
+
+// app.post("/v4/latest/CNY", (req, res, next) => {
+//   // console.log(typeof req.body);
+//   res.send("我很屌");
+// });
+
+// app.run().then(result => {
+//   $done(result);
+// });
